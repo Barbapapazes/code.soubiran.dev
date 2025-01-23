@@ -39,7 +39,7 @@ describe('button-group', () => {
         },
       } }],
     ),
-  ])('renders %s correctly', (name, options) => {
+  ])('renders %s correctly', (_, options) => {
     render(ButtonGroup, {
       attrs: {
         'data-testid': 'button-group',

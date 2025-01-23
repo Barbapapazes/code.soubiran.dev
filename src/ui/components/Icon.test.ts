@@ -11,7 +11,7 @@ describe('icon', () => {
     ['with icon', { props }],
     ['with as', { props: { ...props, as: 'div' } }],
     ['with class', { props: { ...props, class: 'custom-class' } }],
-  ])('renders %s correctly', (name, options) => {
+  ])('renders %s correctly', (_, options) => {
     render(Icon, {
       attrs: {
         'data-testid': 'icon',
