@@ -5,12 +5,9 @@
     "lib": ["ES2023"],
     "moduleDetection": "force",
     "module": "ESNext",
-
-    /* Bundler mode */
     "moduleResolution": "bundler",
+    "types": ["@types/node"],
     "allowImportingTsExtensions": true,
-
-    /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
