@@ -22,7 +22,7 @@ describe('chip', () => {
     // Slots
     ['with default slot', { slots: { default: () => 'Default slot' } }],
     ['with content slot', { slots: { content: () => 'Content slot' } }],
-  ])('renders %s correctly', (name, options) => {
+  ])('renders %s correctly', (_, options) => {
     render(Chip, {
       attrs: {
         'data-testid': 'chip',

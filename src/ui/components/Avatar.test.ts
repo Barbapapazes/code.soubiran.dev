@@ -19,7 +19,7 @@ describe('avatar', () => {
     ['with ui', { props: { ui: { fallback: 'font-bold' } } }],
     // Slots
     ['with default slot', { slots: { default: '🇫🇷' } }],
-  ])('renders %s correctly', (name, options) => {
+  ])('renders %s correctly', (_, options) => {
     render(Avatar, { ...options })
 
     expect(document.querySelector('span')).toMatchSnapshot()

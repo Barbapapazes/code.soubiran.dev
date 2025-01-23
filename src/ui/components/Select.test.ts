@@ -80,7 +80,7 @@ describe('select', () => {
     ['with item-leading slot', { props, slots: { 'item-leading': () => 'Item leading slot' } }],
     ['with item-label slot', { props, slots: { 'item-label': () => 'Item label slot' } }],
     ['with item-trailing slot', { props, slots: { 'item-trailing': () => 'Item trailing slot' } }],
-  ])('renders %s correctly', async (name, options) => {
+  ])('renders %s correctly', async (_, options) => {
     const { html } = render(Select, options)
 
     await new Promise(resolve => setTimeout(resolve, 0))

@@ -40,7 +40,7 @@ describe('input', () => {
     ['with default slot', { slots: { default: () => 'Default slot' } }],
     ['with leading slot', { slots: { leading: () => 'Leading slot' } }],
     ['with trailing slot', { slots: { trailing: () => 'Trailing slot' } }],
-  ])(`renders %s correctly`, (name, options) => {
+  ])(`renders %s correctly`, (_, options) => {
     const { container } = render(Input, options)
 
     expect(container.firstChild).toMatchSnapshot()

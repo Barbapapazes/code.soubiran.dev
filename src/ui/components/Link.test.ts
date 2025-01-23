@@ -14,7 +14,7 @@ describe('link', () => {
     ['with class', { props: { class: 'font-medium' } }],
     // Slots
     ['with default slot', { slots: { default: () => 'Default slot' } }],
-  ])('renders %s correctly', (name, options) => {
+  ])('renders %s correctly', (_, options) => {
     render(Link, {
       attrs: {
         'data-testid': 'link',

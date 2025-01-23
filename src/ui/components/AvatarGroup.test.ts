@@ -30,7 +30,7 @@ describe('avatar group', () => {
     ['with ui', { props: { ui: { base: 'rounded-lg' } } }],
     // Slots
     ['with default slot', {}],
-  ])('renders %s correctly', (name, options) => {
+  ])('renders %s correctly', (_, options) => {
     render(AvatarGroupWrapper, { attrs: { 'data-testid': 'avatar-group' }, ...options })
 
     expect(screen.getByTestId('avatar-group')).toMatchSnapshot()
