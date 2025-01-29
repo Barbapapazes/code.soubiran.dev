@@ -1,7 +1,7 @@
 <script lang="ts">
 const editor = tv({
   slots: {
-    base: 'relative p-5 bg-[var(--ui-bg-elevated)] rounded-[calc(var(--ui-radius)*4)] overflow-hidden',
+    base: 'relative p-5 bg-[var(--ui-bg-elevated)] rounded-[calc(var(--ui-radius)*4)] overflow-hidden flex',
     render: 'absolute inset-5',
     textarea: 'relative font-mono text-transparent caret-[var(--ui-text)] focus:outline-none resize-none w-full h-full',
   },
