@@ -21,20 +21,30 @@ export default defineConfig({
           imports: ['tv'],
         },
       ],
-      dirs: ['./src/composables', './src/utils'],
+      dirs: ['./src/**/composables', './src/**/utils'],
       dts: './src/auto-imports.d.ts',
       viteOptimizeDeps: true,
     }),
     Components({
+      dirs: ['./src/**/components'],
       dts: './src/components.d.ts',
-      dirs: ['./src/components', './src/ui/components'],
     }),
 
     VueDevTools(),
   ],
 
   optimizeDeps: {
-    include: ['tailwind-variants', 'modern-screenshot', 'shiki/core', 'shiki/engine/javascript', '@shikijs/themes/github-dark', '@shikijs/themes/github-light', '@shikijs/langs/typescript', '@shikijs/langs/markdown', 'reka-ui'],
+    include: [
+      'reka-ui',
+      'shiki/core',
+      'tailwind-variants',
+      'modern-screenshot',
+      'shiki/engine/javascript',
+      '@shikijs/langs/markdown',
+      '@shikijs/langs/typescript',
+      '@shikijs/themes/github-dark',
+      '@shikijs/themes/github-light',
+    ],
   },
 
   resolve: {

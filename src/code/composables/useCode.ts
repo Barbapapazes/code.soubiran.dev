@@ -1,6 +1,6 @@
-import type { Language } from '@/types/language'
-import type { SearchParams } from '@/types/search-params'
-import type { Size } from '@/types/size'
+import type { Language } from '@/code/types/language'
+import type { SearchParams } from '@/code/types/search-params'
+import type { Size } from '@/code/types/size'
 
 const defaultSize = 'md'
 const size = ref<Size>(defaultSize)

@@ -1,5 +1,5 @@
-import type { Language } from '@/types/language'
-import type { Size } from '@/types/size'
+import type { Language } from '@/code/types/language'
+import type { Size } from '@/code/types/size'
 
 export interface SearchParams {
   /**
