@@ -22,7 +22,7 @@ const ui = computed(() => watermark({ class: props.class }))
 </script>
 
 <template>
-  <p :class="ui" v-if="text">
+  <p v-if="text" :class="ui">
     {{ text }}
   </p>
 </template>

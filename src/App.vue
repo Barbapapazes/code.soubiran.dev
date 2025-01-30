@@ -1,7 +1,7 @@
 <script lang="ts">
-import Watermark from '@/code/components/Watermark.vue';
 import type { Language } from '@/code/types/language'
 import type { Size } from '@/code/types/size'
+import Watermark from '@/code/components/Watermark.vue'
 import { camera as cameraIcon, moon as moonIcon, sun as sunIcon } from '@/icons'
 
 const app = tv({

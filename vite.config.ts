@@ -3,10 +3,10 @@ import { fileURLToPath } from 'node:url'
 import Tailwind from '@tailwindcss/vite'
 import Vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
+import Fonts from 'unplugin-fonts/vite'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 import VueDevTools from 'vite-plugin-vue-devtools'
-import Fonts from 'unplugin-fonts/vite'
 
 export default defineConfig({
   plugins: [
