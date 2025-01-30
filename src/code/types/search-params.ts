@@ -8,4 +8,5 @@ export interface SearchParams {
   code?: string
   language?: Language
   size?: Size
+  watermark?: string
 }

@@ -8,6 +8,8 @@ const size = ref<Size>(defaultSize)
 const defaultLanguage = 'markdown'
 const language = ref<Language>(defaultLanguage)
 
+const watermark = ref<string | undefined>(undefined)
+
 export function useCode() {
   const params = useUrlSearchParams<SearchParams>('history')
 
@@ -26,9 +28,15 @@ export function useCode() {
     params.code = base64Encode(code.value)
   })
 
+  watermark.value = params.watermark
+  watch(watermark, () => {
+    params.watermark = watermark.value
+  })
+
   return {
     language,
     size,
     code,
+    watermark,
   }
 }

@@ -1,4 +1,5 @@
 <script lang="ts">
+import Watermark from '@/code/components/Watermark.vue';
 import type { Language } from '@/code/types/language'
 import type { Size } from '@/code/types/size'
 import { camera as cameraIcon, moon as moonIcon, sun as sunIcon } from '@/icons'
@@ -7,6 +8,8 @@ const app = tv({
   slots: {
     base: 'w-screen h-screen p-4 bg-[var(--ui-bg)] text-[var(--ui-text)] flex flex-col items-center justify-center gap-8',
     container: 'w-full flex flex-col gap-8',
+    wrapper: 'relative',
+    watermark: 'absolute inset-x-0 bottom-6 text-center translate-y-1/2',
     actions: 'absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex justify-between gap-2',
   },
   variants: {
@@ -62,8 +65,10 @@ const ui = computed(() => app({
 <template>
   <main :class="ui.base()">
     <div :class="ui.container()">
-      <EditorWrapper ref="editor">
+      <EditorWrapper ref="editor" :class="ui.wrapper()">
         <Editor />
+
+        <Watermark :class="ui.watermark()" />
       </EditorWrapper>
 
       <div :class="ui.actions()">

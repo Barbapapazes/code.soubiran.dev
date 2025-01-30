@@ -1,6 +1,12 @@
 @import "tailwindcss";
-@config "../tailwind.config.js";
+@config "../../../tailwind.config.js";
 @import "./shiki.css";
+
+@theme {
+  --font-sans: 'DM Sans', sans-serif;
+  --font-sofia: 'Sofia sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
 
 :root {
   --ui-text-dimmed: var(--color-neutral-400);
