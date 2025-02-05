@@ -9,6 +9,7 @@ const app = tv({
     base: 'w-screen h-screen p-4 bg-[var(--ui-bg)] text-[var(--ui-text)] flex flex-col items-center justify-center gap-8',
     container: 'w-full flex flex-col gap-8',
     wrapper: 'relative',
+    editor: 'shadow-lg',
     watermark: 'absolute inset-x-0 bottom-6 text-center translate-y-1/2',
     actions: 'absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex justify-between gap-2',
   },
@@ -73,7 +74,7 @@ const ui = computed(() => app({
   <main :class="ui.base()">
     <div :class="ui.container()">
       <EditorWrapper ref="editor" :class="ui.wrapper()">
-        <Editor />
+        <Editor :class="ui.editor()" />
 
         <Watermark :class="ui.watermark()" />
       </EditorWrapper>
