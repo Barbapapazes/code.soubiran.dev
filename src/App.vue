@@ -62,7 +62,7 @@ const sizes: { label: string, value: Size }[] = [
     value: 'xl',
   },
 ]
-const languages: Language[] = (['typescript', 'markdown', 'php'] satisfies Language[]).sort()
+const languages: Language[] = (['typescript', 'markdown', 'php', 'json'] satisfies Language[]).sort()
 
 const ui = computed(() => app({
   size: size.value,
