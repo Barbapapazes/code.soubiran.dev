@@ -23,6 +23,9 @@ const app = tv({
       lg: {
         container: 'max-w-screen-lg',
       },
+      xl: {
+        container: 'max-w-screen-xl',
+      },
     },
   },
 })
@@ -53,6 +56,10 @@ const sizes: { label: string, value: Size }[] = [
   {
     label: 'Large',
     value: 'lg',
+  },
+  {
+    label: 'Extra Large',
+    value: 'xl',
   },
 ]
 const languages: Language[] = (['typescript', 'markdown', 'php'] satisfies Language[]).sort()
