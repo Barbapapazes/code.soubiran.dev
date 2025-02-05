@@ -14,6 +14,7 @@ export async function useShiki(code: MaybeRefOrGetter<string>, lang: MaybeRefOrG
       langs: [
         import('@shikijs/langs/typescript'),
         import('@shikijs/langs/markdown'),
+        import('@shikijs/langs/php'),
       ],
       engine: createJavaScriptRegexEngine(),
     })
