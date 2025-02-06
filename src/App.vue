@@ -43,8 +43,7 @@ const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
-const { language, size } = useCode()
-
+const { size } = useSize()
 const sizes: { label: string, value: Size }[] = [
   {
     label: 'Small',
@@ -63,6 +62,8 @@ const sizes: { label: string, value: Size }[] = [
     value: 'xl',
   },
 ]
+
+const { language } = useLanguage()
 const languages: Language[] = (['typescript', 'markdown', 'php', 'json'] satisfies Language[]).sort()
 
 const ui = computed(() => app({

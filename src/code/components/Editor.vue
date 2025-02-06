@@ -1,7 +1,7 @@
 <script lang="ts">
 const editor = tv({
   slots: {
-    base: 'border border-12 border-[var(--ui-bg-inverted)]/20 rounded-[calc(var(--ui-radius)*7)]',
+    base: 'border border-12 border-white/30 rounded-[calc(var(--ui-radius)*7)]',
     wrapper: 'relative p-5 bg-[var(--ui-bg-elevated)] rounded-[calc(var(--ui-radius)*4)] overflow-hidden flex',
     render: 'absolute inset-5',
     textarea: 'relative font-mono text-transparent caret-[var(--ui-text)] focus:outline-none resize-none w-full h-full',
@@ -21,9 +21,11 @@ const props = defineProps<EditorProps>()
 defineEmits<EditorEmits>()
 defineSlots<EditorSlots>()
 
-const textarea = templateRef('textarea')
+const { code } = useCode()
+const { language } = useLanguage()
 
-const { code, language, size } = useCode()
+const { size } = useSize()
+const textarea = templateRef('textarea')
 watch(size, () => {
   textarea.value?.autoResize()
 })
