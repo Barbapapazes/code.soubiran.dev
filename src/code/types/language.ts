@@ -1,1 +1,1 @@
-export type Language = 'typescript' | 'markdown' | 'php' | 'json'
+export type Language = 'typescript' | 'markdown' | 'php' | 'json' | 'vue' | 'html'

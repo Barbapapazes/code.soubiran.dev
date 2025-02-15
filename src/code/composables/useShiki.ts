@@ -8,17 +8,19 @@ export async function useShiki(code: MaybeRefOrGetter<string>, lang: MaybeRefOrG
   if (!highlighter) {
     highlighter = await createHighlighterCore({
       themes: [
-        import("@shikijs/themes/github-dark"),
-        import("@shikijs/themes/github-light"),
+        import('@shikijs/themes/github-dark'),
+        import('@shikijs/themes/github-light'),
       ],
       langs: [
-        import("@shikijs/langs/typescript"),
-        import("@shikijs/langs/markdown"),
-        import("@shikijs/langs/php"),
-        import("@shikijs/langs/json"),
+        import('@shikijs/langs/typescript'),
+        import('@shikijs/langs/markdown'),
+        import('@shikijs/langs/php'),
+        import('@shikijs/langs/json'),
+        import('@shikijs/langs/vue'),
+        import('@shikijs/langs/html'),
       ],
       engine: createJavaScriptRegexEngine(),
-    });
+    })
   }
 
   function codeToHtml(code: string, lang: Language) {

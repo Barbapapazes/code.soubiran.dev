@@ -64,7 +64,7 @@ const sizes: { label: string, value: Size }[] = [
 ]
 
 const { language } = useLanguage()
-const languages: Language[] = (['typescript', 'markdown', 'php', 'json'] satisfies Language[]).sort()
+const languages: Language[] = (['typescript', 'markdown', 'php', 'json', 'html', 'vue'] satisfies Language[]).sort()
 
 const ui = computed(() => app({
   size: size.value,
