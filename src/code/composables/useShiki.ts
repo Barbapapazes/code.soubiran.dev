@@ -30,7 +30,6 @@ export async function useShiki(code: MaybeRefOrGetter<string>, lang: MaybeRefOrG
         import('@shikijs/langs/vue-directives'),
         import('@shikijs/langs/vue-interpolations'),
         import('@shikijs/langs/vue-sfc-style-variable-injection'),
-        // vue,
         vueLang,
         vuePHP,
       ],
