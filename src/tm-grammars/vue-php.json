@@ -1,0 +1,36 @@
+{
+  "displayName": "Vue PHP",
+  "name": "vue-php",
+  "injectTo": [
+    "source.vue"
+  ],
+  "injectionSelector": "L:source.vue",
+  "patterns": [
+    {
+      "include": "#php"
+    }
+  ],
+  "repository": {
+    "php": {
+      "begin": "(<php>)",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.tag.php.html.vue"
+        }
+      },
+      "contentName": "source.php",
+      "end": "(</php>)",
+      "endCaptures": {
+        "1": {
+          "name": "entity.name.tag.php.html.vue"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.php"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.vue.php"
+}
