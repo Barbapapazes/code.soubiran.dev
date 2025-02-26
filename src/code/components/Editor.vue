@@ -2,7 +2,7 @@
 const editor = tv({
   slots: {
     base: 'border border-12 border-white/30 rounded-[calc(var(--ui-radius)*7)]',
-    wrapper: 'relative p-5 bg-[var(--ui-bg-elevated)] rounded-[calc(var(--ui-radius)*4)] overflow-hidden flex',
+    wrapper: 'relative p-5 bg-[var(--ui-bg-elevated)] rounded-[calc(var(--ui-radius)*4)] overflow-hidden flex border border-(--ui-bg-accented)',
     render: 'absolute inset-5',
     textarea: 'relative font-mono text-transparent caret-[var(--ui-text)] focus:outline-none resize-none w-full h-full',
   },
