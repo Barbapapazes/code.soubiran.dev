@@ -2,7 +2,6 @@ import type { Language } from '@/code/types/language'
 import vue from '@shikijs/langs/vue'
 import { createHighlighterCore, type HighlighterCore } from 'shiki/core'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
-import vuePHP from '../../tm-grammars/vue-php.json'
 
 let highlighter: HighlighterCore | null = null
 
@@ -31,7 +30,6 @@ export async function useShiki(code: MaybeRefOrGetter<string>, lang: MaybeRefOrG
         import('@shikijs/langs/vue-interpolations'),
         import('@shikijs/langs/vue-sfc-style-variable-injection'),
         vueLang,
-        vuePHP,
       ],
       engine: createJavaScriptRegexEngine(),
     })
