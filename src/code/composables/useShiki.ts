@@ -1,5 +1,4 @@
 import type { Language } from '@/code/types/language'
-import vue from '@shikijs/langs/vue'
 import { createHighlighterCore, type HighlighterCore } from 'shiki/core'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 
@@ -7,12 +6,6 @@ let highlighter: HighlighterCore | null = null
 
 export async function useShiki(code: MaybeRefOrGetter<string>, lang: MaybeRefOrGetter<Language>) {
   if (!highlighter) {
-    const _vueLang = vue.at(-1)
-    const vueLang = Object.assign({}, _vueLang)
-
-    delete vueLang.embeddedLangsLazy
-    delete vueLang.embeddedLangs
-
     highlighter = await createHighlighterCore({
       themes: [
         import('@shikijs/themes/github-dark'),
@@ -24,12 +17,7 @@ export async function useShiki(code: MaybeRefOrGetter<string>, lang: MaybeRefOrG
         import('@shikijs/langs/php'),
         import('@shikijs/langs/json'),
         import('@shikijs/langs/html'),
-        import('@shikijs/langs/html-derivative'),
-        import('@shikijs/langs/markdown-vue'),
-        import('@shikijs/langs/vue-directives'),
-        import('@shikijs/langs/vue-interpolations'),
-        import('@shikijs/langs/vue-sfc-style-variable-injection'),
-        vueLang,
+        import('@shikijs/langs/vue'),
       ],
       engine: createJavaScriptRegexEngine(),
     })
