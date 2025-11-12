@@ -1,42 +1,9 @@
-<script lang="ts">
+<script setup lang="ts">
 import type { Language } from '@/code/types/language'
 import type { Size } from '@/code/types/size'
 import Watermark from '@/code/components/Watermark.vue'
 import { camera as cameraIcon, moon as moonIcon, sun as sunIcon } from '@/icons'
 
-const app = tv({
-  slots: {
-    base: 'w-screen h-screen p-4 bg-[var(--ui-bg)] text-[var(--ui-text)] flex flex-col items-center justify-center gap-8',
-    container: 'w-full flex flex-col gap-8',
-    wrapper: 'relative',
-    editor: 'shadow-lg',
-    watermark: 'absolute inset-x-0 bottom-6 text-center translate-y-1/2',
-    actions: 'absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex justify-between gap-2',
-  },
-  variants: {
-    size: {
-      sm: {
-        container: 'max-w-screen-sm',
-      },
-      md: {
-        container: 'max-w-screen-md',
-      },
-      lg: {
-        container: 'max-w-screen-lg',
-      },
-      xl: {
-        container: 'max-w-screen-xl',
-      },
-    },
-  },
-})
-
-export interface AppProps {}
-export interface AppEmits {}
-export interface AppSlots {}
-</script>
-
-<script setup lang="ts">
 const editor = templateRef('editor')
 const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
 
@@ -64,50 +31,55 @@ const sizes: { label: string, value: Size }[] = [
 ]
 
 const { language } = useLanguage()
-const languages: Language[] = (['typescript', 'markdown', 'php', 'json', 'html', 'vue'] satisfies Language[]).sort()
-
-const ui = computed(() => app({
-  size: size.value,
-}))
+const languages: { label: string, value: Language }[] = (['typescript', 'markdown', 'php', 'json', 'html', 'vue'] satisfies Language[]).sort().map(lang => ({ label: lang, value: lang }))
 </script>
 
 <template>
-  <main :class="ui.base()">
-    <div :class="ui.container()">
-      <EditorWrapper ref="editor" :class="ui.wrapper()">
-        <Editor :class="ui.editor()" />
+  <main class="w-screen h-screen p-4 bg-[var(--ui-bg)] text-[var(--ui-text)] flex flex-col items-center justify-center gap-8">
+    <div
+      class="w-full flex flex-col gap-8" :class="{
+        'max-w-screen-sm': size === 'sm',
+        'max-w-screen-md': size === 'md',
+        'max-w-screen-lg': size === 'lg',
+        'max-w-screen-xl': size === 'xl',
+      }"
+    >
+      <div ref="editor" class="relative">
+        <Editor class="shadow-lg" />
+        <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
+      </div>
 
-        <Watermark :class="ui.watermark()" />
-      </EditorWrapper>
-
-      <div :class="ui.actions()">
-        <ButtonGroup>
-          <Button
+      <div class="absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex justify-between gap-2">
+        <UButtonGroup>
+          <UButton
             :icon="isDark ? moonIcon : sunIcon"
             color="neutral"
             variant="subtle"
             @click="toggleDark()"
           />
 
-          <Select
+          <USelectMenu
             v-model="size"
-            :items="sizes"
+            :options="sizes"
             color="neutral"
             variant="subtle"
             class="w-28"
           />
 
-          <Select
+          <USelectMenu
             v-model="language"
-            :items="languages"
+            :options="languages"
             color="neutral"
             variant="subtle"
-            class="w-32 capitalize"
-            :ui="{ item: 'capitalize' }"
-          />
-        </ButtonGroup>
+            class="w-32"
+          >
+            <template #label>
+              <span class="capitalize">{{ language }}</span>
+            </template>
+          </USelectMenu>
+        </UButtonGroup>
 
-        <Button
+        <UButton
           :icon="cameraIcon"
           label="Capture"
           color="neutral"
