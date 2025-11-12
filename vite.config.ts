@@ -9,7 +9,17 @@ import VueDevTools from 'vite-plugin-vue-devtools'
 export default defineConfig({
   plugins: [
     Vue(),
-    NuxtUI(),
+    NuxtUI({
+      autoImport: {
+        imports: [
+          'vue',
+          '@vueuse/core',
+        ],
+        dirs: ['./src/**/composables', './src/**/utils'],
+        dts: './src/auto-imports.d.ts',
+        viteOptimizeDeps: true,
+      },
+    }),
 
     Fonts({
       google: {

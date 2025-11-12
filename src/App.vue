@@ -2,9 +2,14 @@
 import type { Language } from '@/code/types/language'
 import type { Size } from '@/code/types/size'
 import Watermark from '@/code/components/Watermark.vue'
+import { useLanguage } from '@/code/composables/useLanguage'
+import { useScreenshot } from '@/code/composables/useScreenshot'
+import { useSize } from '@/code/composables/useSize'
 import { camera as cameraIcon, moon as moonIcon, sun as sunIcon } from '@/icons'
+import { useDark, useToggle } from '@vueuse/core'
+import { ref } from 'vue'
 
-const editor = templateRef('editor')
+const editor = ref<{ el?: HTMLElement }>()
 const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
 
 const isDark = useDark()
