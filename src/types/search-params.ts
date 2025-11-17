@@ -1,5 +1,6 @@
-import type { Language } from '@/code/types/language'
-import type { Size } from '@/code/types/size'
+import type { Gradient } from '@/types/gradient'
+import type { Language } from '@/types/language'
+import type { Size } from '@/types/size'
 
 export interface SearchParams {
   /**
@@ -9,4 +10,5 @@ export interface SearchParams {
   language?: Language
   size?: Size
   watermark?: string
+  gradient?: Gradient
 }

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { SelectItem } from '@nuxt/ui'
+import type { Gradient } from '@/types/gradient'
 import type { Language } from '@/types/language'
 import { useDark, useToggle } from '@vueuse/core'
 import { ref } from 'vue'
@@ -7,6 +8,7 @@ import camera from '~icons/ph/camera'
 import moon from '~icons/ph/moon'
 import sun from '~icons/ph/sun'
 import Watermark from '@/components/Watermark.vue'
+import { useGradient } from '@/composables/useGradient'
 import { useLanguage } from '@/composables/useLanguage'
 import { useScreenshot } from '@/composables/useScreenshot'
 import { useSize } from '@/composables/useSize'
@@ -41,6 +43,10 @@ const { language } = useLanguage()
 const languages: SelectItem[] = (['typescript', 'markdown', 'php', 'json', 'html', 'vue'] satisfies Language[])
   .sort()
   .map(lang => ({ label: lang, value: lang }))
+
+const { gradient } = useGradient()
+const gradients: SelectItem[] = (['purple', 'blue', 'green', 'orange', 'pink', 'red'] satisfies Gradient[])
+  .map(grad => ({ label: grad.charAt(0).toUpperCase() + grad.slice(1), value: grad }))
 </script>
 
 <template>
@@ -53,7 +59,7 @@ const languages: SelectItem[] = (['typescript', 'markdown', 'php', 'json', 'html
         'max-w-screen-xl': size === 'xl',
       }"
     >
-      <EditorWrapper ref="editor" class="relative">
+      <EditorWrapper ref="editor" :gradient="gradient" class="relative">
         <Editor class="shadow-lg" />
 
         <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
@@ -82,6 +88,14 @@ const languages: SelectItem[] = (['typescript', 'markdown', 'php', 'json', 'html
             color="neutral"
             variant="subtle"
             class="w-32"
+          />
+
+          <USelect
+            v-model="gradient"
+            :items="gradients"
+            color="neutral"
+            variant="subtle"
+            class="w-28"
           />
         </UFieldGroup>
 
