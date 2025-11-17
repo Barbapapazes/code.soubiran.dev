@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Language } from '@/code/types/language'
+import type { Language } from '@/types/language'
 
 const render = tv({
   base: '',

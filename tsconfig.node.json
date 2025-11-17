@@ -6,6 +6,11 @@
     "moduleDetection": "force",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "paths": {
+      "#build/ui": [
+        "./node_modules/.nuxt-ui/ui"
+      ]
+    },
     "types": ["@types/node"],
     "allowImportingTsExtensions": true,
     "strict": true,

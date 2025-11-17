@@ -1,5 +1,5 @@
-import type { Size } from '@/code/types/size'
-import { params } from '@/code/state/params'
+import type { Size } from '@/types/size'
+import { params } from '@/state/params'
 
 const size = ref<Size>('md')
 export function useSize() {

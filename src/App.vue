@@ -1,13 +1,15 @@
-<script setup lang="ts">
-import type { Language } from '@/code/types/language'
-import type { Size } from '@/code/types/size'
-import Watermark from '@/code/components/Watermark.vue'
-import { useLanguage } from '@/code/composables/useLanguage'
-import { useScreenshot } from '@/code/composables/useScreenshot'
-import { useSize } from '@/code/composables/useSize'
-import { camera as cameraIcon, moon as moonIcon, sun as sunIcon } from '@/icons'
+<script lang="ts" setup>
+import type { SelectItem } from '@nuxt/ui'
+import type { Language } from '@/types/language'
 import { useDark, useToggle } from '@vueuse/core'
 import { ref } from 'vue'
+import camera from '~icons/ph/camera'
+import moon from '~icons/ph/moon'
+import sun from '~icons/ph/sun'
+import Watermark from '@/components/Watermark.vue'
+import { useLanguage } from '@/composables/useLanguage'
+import { useScreenshot } from '@/composables/useScreenshot'
+import { useSize } from '@/composables/useSize'
 
 const editor = ref<{ el?: HTMLElement }>()
 const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
@@ -16,7 +18,7 @@ const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
 const { size } = useSize()
-const sizes: { label: string, value: Size }[] = [
+const sizes: SelectItem[] = [
   {
     label: 'Small',
     value: 'sm',
@@ -36,11 +38,13 @@ const sizes: { label: string, value: Size }[] = [
 ]
 
 const { language } = useLanguage()
-const languages: { label: string, value: Language }[] = (['typescript', 'markdown', 'php', 'json', 'html', 'vue'] satisfies Language[]).sort().map(lang => ({ label: lang, value: lang }))
+const languages: SelectItem[] = (['typescript', 'markdown', 'php', 'json', 'html', 'vue'] satisfies Language[])
+  .sort()
+  .map(lang => ({ label: lang, value: lang }))
 </script>
 
 <template>
-  <main class="w-screen h-screen p-4 bg-[var(--ui-bg)] text-[var(--ui-text)] flex flex-col items-center justify-center gap-8">
+  <main class="w-screen h-screen p-4 bg-default text-default flex flex-col items-center justify-center gap-8">
     <div
       class="w-full flex flex-col gap-8" :class="{
         'max-w-screen-sm': size === 'sm',
@@ -49,43 +53,40 @@ const languages: { label: string, value: Language }[] = (['typescript', 'markdow
         'max-w-screen-xl': size === 'xl',
       }"
     >
-      <div ref="editor" class="relative">
+      <EditorWrapper ref="editor" class="relative">
         <Editor class="shadow-lg" />
-        <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
-      </div>
+
+        <Watermark class="absolute inset-0 bottom-6 text-center translate-y-1/2" />
+      </EditorWrapper>
 
       <div class="absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex justify-between gap-2">
-        <UButtonGroup>
+        <UFieldGroup>
           <UButton
-            :icon="isDark ? moonIcon : sunIcon"
+            :icon="isDark ? moon : sun"
             color="neutral"
             variant="subtle"
             @click="toggleDark()"
           />
 
-          <USelectMenu
+          <USelect
             v-model="size"
-            :options="sizes"
+            :items="sizes"
             color="neutral"
             variant="subtle"
             class="w-28"
           />
 
-          <USelectMenu
+          <USelect
             v-model="language"
-            :options="languages"
+            :items="languages"
             color="neutral"
             variant="subtle"
             class="w-32"
-          >
-            <template #label>
-              <span class="capitalize">{{ language }}</span>
-            </template>
-          </USelectMenu>
-        </UButtonGroup>
+          />
+        </UFieldGroup>
 
         <UButton
-          :icon="cameraIcon"
+          :icon="camera"
           label="Capture"
           color="neutral"
           variant="solid"

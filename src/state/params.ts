@@ -1,3 +1,3 @@
-import type { SearchParams } from '@/code/types/search-params'
+import type { SearchParams } from '@/types/search-params'
 
 export const params = useUrlSearchParams<SearchParams>('history')

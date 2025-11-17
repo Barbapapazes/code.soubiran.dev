@@ -1,27 +1,43 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import NuxtUI from '@nuxt/ui/vite'
-import Vue from '@vitejs/plugin-vue'
-import Fonts from 'unplugin-fonts/vite'
+import ui from '@nuxt/ui/vite'
+import vue from '@vitejs/plugin-vue'
+import fonts from 'unplugin-fonts/vite'
+import icons from 'unplugin-icons/vite'
 import { defineConfig } from 'vite'
-import VueDevTools from 'vite-plugin-vue-devtools'
 
 export default defineConfig({
   plugins: [
-    Vue(),
-    NuxtUI({
+    vue(),
+
+    ui({
+      ui: {
+        colors: {
+          neutral: 'neutral',
+        },
+      },
+      components: {
+        dts: './src/components.d.ts',
+      },
       autoImport: {
         imports: [
           'vue',
           '@vueuse/core',
+          {
+            from: 'tailwind-variants',
+            imports: ['tv'],
+          },
         ],
-        dirs: ['./src/**/composables', './src/**/utils'],
+        dirs: ['./src/composables', './src/utils'],
         dts: './src/auto-imports.d.ts',
-        viteOptimizeDeps: true,
       },
     }),
 
-    Fonts({
+    icons({
+      autoInstall: true,
+    }),
+
+    fonts({
       google: {
         families: [
           {
@@ -39,8 +55,6 @@ export default defineConfig({
         ],
       },
     }),
-
-    VueDevTools(),
   ],
 
   optimizeDeps: {
@@ -53,6 +67,15 @@ export default defineConfig({
       '@shikijs/langs/typescript',
       '@shikijs/themes/github-dark',
       '@shikijs/themes/github-light',
+      '@shikijs/langs/vue',
+      '@shikijs/langs/php',
+      '@shikijs/langs/json',
+      '@shikijs/langs/html',
+      '@shikijs/langs/html-derivative',
+      '@shikijs/langs/markdown-vue',
+      '@shikijs/langs/vue-directives',
+      '@shikijs/langs/vue-interpolations',
+      '@shikijs/langs/vue-sfc-style-variable-injection',
     ],
   },
 

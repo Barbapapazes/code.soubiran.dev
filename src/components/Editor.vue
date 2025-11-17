@@ -1,10 +1,10 @@
 <script lang="ts">
 const editor = tv({
   slots: {
-    base: 'border border-12 border-white/30 rounded-[calc(var(--ui-radius)*7)]',
-    wrapper: 'relative p-5 bg-[var(--ui-bg-elevated)] rounded-[calc(var(--ui-radius)*4)] overflow-hidden flex border border-(--ui-bg-accented)',
+    base: 'border border-12 border-white/30 rounded-3xl',
+    wrapper: 'relative p-5 bg-elevated rounded-xl overflow-hidden flex',
     render: 'absolute inset-5',
-    textarea: 'relative font-mono text-transparent caret-[var(--ui-text)] focus:outline-none resize-none w-full h-full',
+    textarea: 'relative font-mono text-transparent caret-default focus:outline-none resize-none w-full h-full',
   },
 })
 

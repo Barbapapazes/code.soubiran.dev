@@ -1,8 +1,9 @@
-import type { Language } from '@/code/types/language'
+import type { HighlighterCore } from 'shiki/core'
+import type { Language } from '@/types/language'
 import vue from '@shikijs/langs/vue'
-import { createHighlighterCore, type HighlighterCore } from 'shiki/core'
+import { createHighlighterCore } from 'shiki/core'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
-import vuePHP from '../../tm-grammars/vue-php.json'
+import vuePHP from '../tm-grammars/vue-php.json'
 
 let highlighter: HighlighterCore | null = null
 
