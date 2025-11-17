@@ -56,7 +56,7 @@ const languages: SelectItem[] = (['typescript', 'markdown', 'php', 'json', 'html
       <EditorWrapper ref="editor" class="relative">
         <Editor class="shadow-lg" />
 
-        <Watermark class="absolute inset-0 bottom-6 text-center translate-y-1/2" />
+        <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
       </EditorWrapper>
 
       <div class="absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex justify-between gap-2">

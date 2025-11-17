@@ -4,7 +4,7 @@ const editor = tv({
     base: 'border border-12 border-white/30 rounded-3xl',
     wrapper: 'relative p-5 bg-elevated rounded-xl overflow-hidden flex',
     render: 'absolute inset-5',
-    textarea: 'relative font-mono text-transparent caret-default focus:outline-none resize-none w-full h-full',
+    textarea: 'relative font-mono text-transparent caret-(--ui-text-muted) focus:outline-none resize-none w-full h-full',
   },
 })
 
