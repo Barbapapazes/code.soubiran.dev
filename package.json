@@ -15,7 +15,7 @@
     "@nuxt/ui": "^4.1.0",
     "@shikijs/langs": "^2.1.0",
     "@shikijs/themes": "^2.1.0",
-    "@vueuse/core": "^12.5.0",
+    "@vueuse/core": "^12.8.2",
     "defu": "^6.1.4",
     "modern-screenshot": "^4.5.5",
     "reka-ui": "2.6.0",
