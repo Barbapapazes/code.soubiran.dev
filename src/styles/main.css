@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@import "./shiki.css";
+
+@theme {
+  --font-sans: 'DM Sans', sans-serif;
+  --font-sofia: 'Sofia sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+:root {
+  --ui-primary: 'black';
+}
+
+.dark {
+  --ui-primary: 'white';
+}

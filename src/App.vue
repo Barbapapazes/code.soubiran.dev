@@ -1,50 +1,24 @@
-<script lang="ts">
-import type { Language } from '@/code/types/language'
-import type { Size } from '@/code/types/size'
-import Watermark from '@/code/components/Watermark.vue'
-import { camera as cameraIcon, moon as moonIcon, sun as sunIcon } from '@/icons'
+<script lang="ts" setup>
+import type { SelectItem } from '@nuxt/ui'
+import type { Language } from '@/types/language'
+import { useDark, useToggle } from '@vueuse/core'
+import { ref } from 'vue'
+import camera from '~icons/ph/camera'
+import moon from '~icons/ph/moon'
+import sun from '~icons/ph/sun'
+import Watermark from '@/components/Watermark.vue'
+import { useLanguage } from '@/composables/useLanguage'
+import { useScreenshot } from '@/composables/useScreenshot'
+import { useSize } from '@/composables/useSize'
 
-const app = tv({
-  slots: {
-    base: 'w-screen h-screen p-4 bg-[var(--ui-bg)] text-[var(--ui-text)] flex flex-col items-center justify-center gap-8',
-    container: 'w-full flex flex-col gap-8',
-    wrapper: 'relative',
-    editor: 'shadow-lg',
-    watermark: 'absolute inset-x-0 bottom-6 text-center translate-y-1/2',
-    actions: 'absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex justify-between gap-2',
-  },
-  variants: {
-    size: {
-      sm: {
-        container: 'max-w-screen-sm',
-      },
-      md: {
-        container: 'max-w-screen-md',
-      },
-      lg: {
-        container: 'max-w-screen-lg',
-      },
-      xl: {
-        container: 'max-w-screen-xl',
-      },
-    },
-  },
-})
-
-export interface AppProps {}
-export interface AppEmits {}
-export interface AppSlots {}
-</script>
-
-<script setup lang="ts">
-const editor = templateRef('editor')
+const editor = ref<{ el?: HTMLElement }>()
 const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
 const { size } = useSize()
-const sizes: { label: string, value: Size }[] = [
+const sizes: SelectItem[] = [
   {
     label: 'Small',
     value: 'sm',
@@ -64,32 +38,37 @@ const sizes: { label: string, value: Size }[] = [
 ]
 
 const { language } = useLanguage()
-const languages: Language[] = (['typescript', 'markdown', 'php', 'json', 'html', 'vue'] satisfies Language[]).sort()
-
-const ui = computed(() => app({
-  size: size.value,
-}))
+const languages: SelectItem[] = (['typescript', 'markdown', 'php', 'json', 'html', 'vue'] satisfies Language[])
+  .sort()
+  .map(lang => ({ label: lang, value: lang }))
 </script>
 
 <template>
-  <main :class="ui.base()">
-    <div :class="ui.container()">
-      <EditorWrapper ref="editor" :class="ui.wrapper()">
-        <Editor :class="ui.editor()" />
+  <main class="w-screen h-screen p-4 bg-default text-default flex flex-col items-center justify-center gap-8">
+    <div
+      class="w-full flex flex-col gap-8" :class="{
+        'max-w-screen-sm': size === 'sm',
+        'max-w-screen-md': size === 'md',
+        'max-w-screen-lg': size === 'lg',
+        'max-w-screen-xl': size === 'xl',
+      }"
+    >
+      <EditorWrapper ref="editor" class="relative">
+        <Editor class="shadow-lg" />
 
-        <Watermark :class="ui.watermark()" />
+        <Watermark class="absolute inset-0 bottom-6 text-center translate-y-1/2" />
       </EditorWrapper>
 
-      <div :class="ui.actions()">
-        <ButtonGroup>
-          <Button
-            :icon="isDark ? moonIcon : sunIcon"
+      <div class="absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex justify-between gap-2">
+        <UFieldGroup>
+          <UButton
+            :icon="isDark ? moon : sun"
             color="neutral"
             variant="subtle"
             @click="toggleDark()"
           />
 
-          <Select
+          <USelect
             v-model="size"
             :items="sizes"
             color="neutral"
@@ -97,18 +76,17 @@ const ui = computed(() => app({
             class="w-28"
           />
 
-          <Select
+          <USelect
             v-model="language"
             :items="languages"
             color="neutral"
             variant="subtle"
-            class="w-32 capitalize"
-            :ui="{ item: 'capitalize' }"
+            class="w-32"
           />
-        </ButtonGroup>
+        </UFieldGroup>
 
-        <Button
-          :icon="cameraIcon"
+        <UButton
+          :icon="camera"
           label="Capture"
           color="neutral"
           variant="solid"

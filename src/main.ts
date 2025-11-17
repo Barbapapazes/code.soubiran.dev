@@ -1,5 +1,6 @@
+import ui from '@nuxt/ui/vue-plugin'
 import { createApp } from 'vue'
 import App from './App.vue'
-import './common/styles/main.css'
+import './styles/main.css'
 
-createApp(App).mount('#app')
+createApp(App).use(ui).mount('#app')

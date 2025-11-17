@@ -1,37 +1,43 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import Tailwind from '@tailwindcss/vite'
-import Vue from '@vitejs/plugin-vue'
-import AutoImport from 'unplugin-auto-import/vite'
-import Fonts from 'unplugin-fonts/vite'
-import Components from 'unplugin-vue-components/vite'
+import ui from '@nuxt/ui/vite'
+import vue from '@vitejs/plugin-vue'
+import fonts from 'unplugin-fonts/vite'
+import icons from 'unplugin-icons/vite'
 import { defineConfig } from 'vite'
-import VueDevTools from 'vite-plugin-vue-devtools'
 
 export default defineConfig({
   plugins: [
-    Vue(),
-    Tailwind(),
+    vue(),
 
-    AutoImport({
-      imports: [
-        'vue',
-        '@vueuse/core',
-        {
-          from: 'tailwind-variants',
-          imports: ['tv'],
+    ui({
+      ui: {
+        colors: {
+          neutral: 'neutral',
         },
-      ],
-      dirs: ['./src/**/composables', './src/**/utils'],
-      dts: './src/auto-imports.d.ts',
-      viteOptimizeDeps: true,
-    }),
-    Components({
-      dirs: ['./src/**/components'],
-      dts: './src/components.d.ts',
+      },
+      components: {
+        dts: './src/components.d.ts',
+      },
+      autoImport: {
+        imports: [
+          'vue',
+          '@vueuse/core',
+          {
+            from: 'tailwind-variants',
+            imports: ['tv'],
+          },
+        ],
+        dirs: ['./src/composables', './src/utils'],
+        dts: './src/auto-imports.d.ts',
+      },
     }),
 
-    Fonts({
+    icons({
+      autoInstall: true,
+    }),
+
+    fonts({
       google: {
         families: [
           {
@@ -49,23 +55,27 @@ export default defineConfig({
         ],
       },
     }),
-
-    VueDevTools(),
   ],
 
   optimizeDeps: {
     include: [
       'defu',
-      'ohash',
-      'reka-ui',
       'shiki/core',
-      'tailwind-variants',
       'modern-screenshot',
       'shiki/engine/javascript',
       '@shikijs/langs/markdown',
       '@shikijs/langs/typescript',
       '@shikijs/themes/github-dark',
       '@shikijs/themes/github-light',
+      '@shikijs/langs/vue',
+      '@shikijs/langs/php',
+      '@shikijs/langs/json',
+      '@shikijs/langs/html',
+      '@shikijs/langs/html-derivative',
+      '@shikijs/langs/markdown-vue',
+      '@shikijs/langs/vue-directives',
+      '@shikijs/langs/vue-interpolations',
+      '@shikijs/langs/vue-sfc-style-variable-injection',
     ],
   },
 

@@ -4,14 +4,24 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
-    "types": [],
+    "types": [
+      "unplugin-icons/types/vue"
+    ],
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/auto-imports.d.ts", "src/components.d.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "src/auto-imports.d.ts",
+    "src/components.d.ts",
+    "src/vite-env.d.ts"
+  ]
 }
