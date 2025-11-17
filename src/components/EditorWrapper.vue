@@ -1,10 +1,14 @@
 <script lang="ts">
+import type { Gradient } from '@/types/gradient'
+import { gradients } from '@/types/gradient'
+
 const editorWrapper = tv({
-  base: 'p-12 bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500',
+  base: 'p-12',
 })
 
 export interface EditorWrapperProps {
   class?: any
+  gradient?: Gradient
 }
 export interface EditorWrapperEmits {}
 export interface EditorWrapperSlots {
@@ -13,7 +17,9 @@ export interface EditorWrapperSlots {
 </script>
 
 <script lang="ts" setup>
-const props = defineProps<EditorWrapperProps>()
+const props = withDefaults(defineProps<EditorWrapperProps>(), {
+  gradient: 'purple',
+})
 defineEmits<EditorWrapperEmits>()
 defineSlots<EditorWrapperSlots>()
 
@@ -22,7 +28,8 @@ defineExpose({
   el,
 })
 
-const ui = computed(() => editorWrapper({ class: props.class }))
+const gradientClass = computed(() => gradients[props.gradient])
+const ui = computed(() => editorWrapper({ class: [props.class, gradientClass.value] }))
 </script>
 
 <template>
