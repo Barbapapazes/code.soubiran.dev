@@ -11,4 +11,8 @@ export interface SearchParams {
   size?: Size
   watermark?: string
   gradient?: Gradient
+  /**
+   * Title to display at the top of the code block.
+   */
+  title?: string
 }
