@@ -65,47 +65,49 @@ const gradients: SelectItem[] = (['purple', 'blue', 'green', 'orange', 'pink', '
         <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
       </EditorWrapper>
 
-      <div class="absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex justify-between gap-2">
-        <UFieldGroup>
+      <div class="absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex flex-col gap-2">
+        <div class="flex justify-between gap-2">
+          <UFieldGroup>
+            <UButton
+              :icon="isDark ? moon : sun"
+              color="neutral"
+              variant="subtle"
+              @click="toggleDark()"
+            />
+
+            <USelect
+              v-model="size"
+              :items="sizes"
+              color="neutral"
+              variant="subtle"
+              class="w-28"
+            />
+
+            <USelect
+              v-model="language"
+              :items="languages"
+              color="neutral"
+              variant="subtle"
+              class="w-32"
+            />
+
+            <USelect
+              v-model="gradient"
+              :items="gradients"
+              color="neutral"
+              variant="subtle"
+              class="w-28"
+            />
+          </UFieldGroup>
+
           <UButton
-            :icon="isDark ? moon : sun"
+            :icon="camera"
+            label="Capture"
             color="neutral"
-            variant="subtle"
-            @click="toggleDark()"
+            variant="solid"
+            @click="captureScreenshot"
           />
-
-          <USelect
-            v-model="size"
-            :items="sizes"
-            color="neutral"
-            variant="subtle"
-            class="w-28"
-          />
-
-          <USelect
-            v-model="language"
-            :items="languages"
-            color="neutral"
-            variant="subtle"
-            class="w-32"
-          />
-
-          <USelect
-            v-model="gradient"
-            :items="gradients"
-            color="neutral"
-            variant="subtle"
-            class="w-28"
-          />
-        </UFieldGroup>
-
-        <UButton
-          :icon="camera"
-          label="Capture"
-          color="neutral"
-          variant="solid"
-          @click="captureScreenshot"
-        />
+        </div>
       </div>
     </div>
   </main>
