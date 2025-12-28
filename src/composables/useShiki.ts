@@ -32,6 +32,7 @@ export async function useShiki(code: MaybeRefOrGetter<string>, lang: MaybeRefOrG
         light: 'github-light',
       },
       defaultColor: false,
+      tabindex: -1,
     })
   }
 

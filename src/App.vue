@@ -19,8 +19,6 @@ const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
-const { title } = useCodeTitle()
-
 const { size } = useSize()
 const sizes: SelectItem[] = [
   {
@@ -68,13 +66,6 @@ const gradients: SelectItem[] = (['purple', 'blue', 'green', 'orange', 'pink', '
       </EditorWrapper>
 
       <div class="absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex flex-col gap-2">
-        <UInput
-          v-model="title"
-          placeholder="Add a title..."
-          color="neutral"
-          variant="subtle"
-        />
-
         <div class="flex justify-between gap-2">
           <UFieldGroup>
             <UButton
