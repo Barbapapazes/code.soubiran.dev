@@ -10,7 +10,7 @@ const editor = tv({
     render: 'absolute inset-5',
     textarea: 'relative font-mono text-transparent caret-(--ui-text-muted) focus:outline-none resize-none w-full h-full',
     imageWrapper: 'relative p-5 bg-elevated overflow-hidden flex items-center justify-center min-h-[300px]',
-    image: 'absolute inset-5',
+    image: 'max-w-full max-h-full object-contain',
     dropzone: 'absolute inset-0 border-2 border-dashed border-(--ui-border-accented) bg-(--ui-bg-elevated/50) flex items-center justify-center z-20',
   },
 })
@@ -84,15 +84,17 @@ function handleDrop(e: DragEvent) {
     return
 
   const file = files[0]
-  if (!file.type.startsWith('image/'))
+  if (!file.type.startsWith('image/')) {
+    // TODO: Show error notification that only image files are supported
     return
+  }
 
   const reader = new FileReader()
   reader.onload = (event) => {
     const result = event.target?.result
     if (typeof result === 'string') {
       imageData.value = result
-      code.value = '' // Clear code when image is set
+      // Note: Code is preserved and will be restored when image is cleared
     }
   }
   reader.readAsDataURL(file)
@@ -142,10 +144,6 @@ const ui = computed(() => editor())
 
     <!-- Image Mode -->
     <div v-if="isImageMode" :class="ui.imageWrapper({ class: props.ui?.imageWrapper })">
-      <Image
-        :src="imageData"
-        :class="ui.image({ class: props.ui?.image })"
-      />
       <div :class="ui.actions({ class: props.ui?.actions })">
         <UButton
           color="neutral"
@@ -155,6 +153,10 @@ const ui = computed(() => editor())
           @click="clearImage"
         />
       </div>
+      <Image
+        :src="imageData"
+        :class="ui.image({ class: props.ui?.image })"
+      />
     </div>
 
     <!-- Code Mode -->
