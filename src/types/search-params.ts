@@ -27,4 +27,8 @@ export interface SearchParams {
    * Title to display at the top of the code block.
    */
   title?: string
+  /**
+   * Image data URL to display instead of code.
+   */
+  image?: string
 }
