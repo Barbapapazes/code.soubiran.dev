@@ -20,7 +20,7 @@ defineSlots<TextareaSlots>()
 
 const value = defineModel<string>({ required: true })
 
-const textareaRef = templateRef('textareaRef')
+const textareaRef = useTemplateRef('textareaRef')
 
 function autoResize() {
   if (!textareaRef.value) {

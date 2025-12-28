@@ -25,12 +25,14 @@ const props = defineProps<EditorProps>()
 defineEmits<EditorEmits>()
 defineSlots<EditorSlots>()
 
+const editable = useTemplateRef('editable')
+const textarea = useTemplateRef('textarea')
+
 const { code } = useCode()
 const { language } = useLanguage()
 
 const { title } = useCodeTitle()
 const isTitleEnabled = ref(false)
-const editable = useTemplateRef('editable')
 const showTitle = computed(() => title.value || isTitleEnabled.value)
 function enableTitle() {
   isTitleEnabled.value = true
@@ -45,7 +47,6 @@ function onTitleSubmit() {
 }
 
 const { size } = useSize()
-const textarea = useTemplateRef('textarea')
 watch(size, () => {
   textarea.value?.autoResize()
 })
