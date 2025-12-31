@@ -31,7 +31,7 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "eslint": "^9.39.1",
-    "tailwindcss": "^4.1.17",
+    "tailwindcss": "^4.1.18",
     "taze": "^19.9.0",
     "typescript": "~5.9.3",
     "unplugin-fonts": "^1.4.0",
