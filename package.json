@@ -12,7 +12,7 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
-    "@nuxt/ui": "^4.1.0",
+    "@nuxt/ui": "^4.4.0",
     "@shikijs/langs": "^3.15.0",
     "@shikijs/themes": "^3.15.0",
     "@vueuse/core": "^14.0.0",
