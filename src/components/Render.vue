@@ -2,13 +2,16 @@
 import type { Language } from '@/types/language'
 
 const render = tv({
-  base: '',
+  slots: {
+    base: 'w-full h-full',
+  },
 })
 
 export interface RenderProps {
   language: Language
   code: string
   class?: any
+  ui?: Partial<typeof render.slots>
 }
 export interface RenderEmits {}
 export interface RenderSlots {}
@@ -21,9 +24,9 @@ defineSlots<RenderSlots>()
 
 const { html } = await useShiki(() => props.code, () => props.language)
 
-const ui = computed(() => render({ class: props.class }))
+const ui = computed(() => render())
 </script>
 
 <template>
-  <div :class="ui" v-html="html" />
+  <div :class="ui.base({ class: [props.ui?.base, props.class] })" v-html="html" />
 </template>

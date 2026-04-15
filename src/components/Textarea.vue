@@ -1,11 +1,14 @@
 <script lang="ts">
 const textarea = tv({
-  base: '',
+  slots: {
+    base: 'block',
+  },
 })
 
 export interface TextareaProps {
   rows?: number
   class?: any
+  ui?: Partial<typeof textarea.slots>
 }
 export interface TextareaEmits {}
 export interface TextareaSlots {}
@@ -53,9 +56,9 @@ defineExpose({
   autoResize,
 })
 
-const ui = computed(() => textarea({ class: props.class }))
+const ui = computed(() => textarea())
 </script>
 
 <template>
-  <textarea ref="textareaRef" v-model="value" :class="ui" />
+  <textarea ref="textareaRef" v-model="value" :class="ui.base({ class: [props.ui?.base, props.class] })" />
 </template>

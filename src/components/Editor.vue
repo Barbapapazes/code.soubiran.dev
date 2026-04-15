@@ -55,7 +55,7 @@ const ui = computed(() => editor())
 </script>
 
 <template>
-  <div :class="ui.base({ class: [props.class, props.ui?.base] })">
+  <div :class="ui.base({ class: [props.ui?.base, props.class] })">
     <div
       v-if="!showTitle"
       :class="ui.actions({ class: props.ui?.actions })"

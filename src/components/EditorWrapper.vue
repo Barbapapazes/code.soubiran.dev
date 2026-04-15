@@ -3,12 +3,15 @@ import type { Gradient } from '@/types/gradient'
 import { gradients } from '@/types/gradient'
 
 const editorWrapper = tv({
-  base: 'p-12',
+  slots: {
+    base: 'p-12',
+  },
 })
 
 export interface EditorWrapperProps {
   class?: any
   gradient?: Gradient
+  ui?: Partial<typeof editorWrapper.slots>
 }
 export interface EditorWrapperEmits {}
 export interface EditorWrapperSlots {
@@ -29,11 +32,11 @@ defineExpose({
 })
 
 const gradientClass = computed(() => gradients[props.gradient])
-const ui = computed(() => editorWrapper({ class: [props.class, gradientClass.value] }))
+const ui = computed(() => editorWrapper())
 </script>
 
 <template>
-  <div ref="el" :class="ui">
+  <div ref="el" :class="ui.base({ class: [props.ui?.base, gradientClass, props.class] })">
     <slot />
   </div>
 </template>
