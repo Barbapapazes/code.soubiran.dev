@@ -2,14 +2,15 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "code-soubiran-dev",
   "compatibility_date": "2026-04-15",
-  "workers_dev": false,
-  "observability": {
-    "enabled": true
-  },
+  "routes": [
+    {
+      "pattern": "code.soubiran.dev",
+      "zone_name": "soubiran.dev",
+      "custom_domain": true
+    }
+  ],
+  "workers_dev": true,
   "assets": {
     "not_found_handling": "single-page-application"
-  },
-  "compatibility_flags": [
-    "nodejs_compat"
-  ]
+  }
 }
