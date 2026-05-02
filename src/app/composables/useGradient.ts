@@ -1,5 +1,5 @@
-import type { Gradient } from '@/types/gradient'
-import { params } from '@/state/params'
+import type { Gradient } from '@/app/types/gradient'
+import { params } from '@/app/state/params'
 
 const gradient = ref<Gradient>('purple')
 export function useGradient() {

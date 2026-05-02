@@ -4,8 +4,8 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [
     soubiran({
-      title: 'QR',
-      hostname: 'qr.soubiran.dev',
+      title: 'Code',
+      hostname: 'code.soubiran.dev',
       markdown: false,
       ssg: false,
       api: false,

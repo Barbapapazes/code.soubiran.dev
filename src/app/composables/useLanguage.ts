@@ -1,5 +1,5 @@
-import type { Language } from '@/types/language'
-import { params } from '@/state/params'
+import type { Language } from '@/app/types/language'
+import { params } from '@/app/state/params'
 
 const language = ref<Language>('markdown')
 export function useLanguage() {

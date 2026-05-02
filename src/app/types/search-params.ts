@@ -1,6 +1,6 @@
-import type { Gradient } from '@/types/gradient'
-import type { Language } from '@/types/language'
-import type { Size } from '@/types/size'
+import type { Gradient } from '@/app/types/gradient'
+import type { Language } from '@/app/types/language'
+import type { Size } from '@/app/types/size'
 
 export interface SearchParams {
   /**

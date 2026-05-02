@@ -18,9 +18,9 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.vue",
-    "src/auto-imports.d.ts",
-    "src/components.d.ts"
+    "src/app/**/*.ts",
+    "src/app/**/*.vue",
+    "src/app/auto-imports.d.ts",
+    "src/app/components.d.ts"
   ]
 }

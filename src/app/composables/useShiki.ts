@@ -1,5 +1,5 @@
 import type { HighlighterCore } from 'shiki/core'
-import type { Language } from '@/types/language'
+import type { Language } from '@/app/types/language'
 import { createHighlighterCore } from 'shiki/core'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 

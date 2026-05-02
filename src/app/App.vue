@@ -1,11 +1,11 @@
 <script lang="ts">
 import type { SelectItem } from '@nuxt/ui'
-import type { Gradient } from '@/types/gradient'
-import type { Language } from '@/types/language'
+import type { Gradient } from '@/app/types/gradient'
+import type { Language } from '@/app/types/language'
 import camera from '~icons/ph/camera'
 import moon from '~icons/ph/moon'
 import sun from '~icons/ph/sun'
-import Watermark from '@/components/Watermark.vue'
+import Watermark from '@/app/components/Watermark.vue'
 
 const app = tv({
   slots: {

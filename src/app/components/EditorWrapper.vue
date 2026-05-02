@@ -1,6 +1,6 @@
 <script lang="ts">
-import type { Gradient } from '@/types/gradient'
-import { gradients } from '@/types/gradient'
+import type { Gradient } from '@/app/types/gradient'
+import { gradients } from '@/app/types/gradient'
 
 const editorWrapper = tv({
   slots: {

@@ -1,4 +1,4 @@
-import { params } from '@/state/params'
+import { params } from '@/app/state/params'
 
 const watermark = ref('')
 export function useWatermark() {

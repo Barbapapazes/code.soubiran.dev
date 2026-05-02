@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Language } from '@/types/language'
+import type { Language } from '@/app/types/language'
 
 const render = tv({
   slots: {

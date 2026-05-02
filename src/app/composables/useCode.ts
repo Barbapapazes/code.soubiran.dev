@@ -1,4 +1,4 @@
-import { params } from '@/state/params'
+import { params } from '@/app/state/params'
 
 const code = ref('')
 export function useCode() {
