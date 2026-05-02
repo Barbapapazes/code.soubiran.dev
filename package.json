@@ -12,7 +12,7 @@
     "deploy": "pnpm run build && wrangler deploy"
   },
   "dependencies": {
-    "@nuxt/ui": "^4.7.0",
+    "@nuxt/ui": "^4.7.1",
     "@shikijs/langs": "^3.23.0",
     "@shikijs/themes": "^3.23.0",
     "@vueuse/core": "^14.3.0",
