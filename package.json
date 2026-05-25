@@ -21,8 +21,8 @@
     "reka-ui": "2.6.0",
     "shiki": "^4.1.0",
     "tailwind-variants": "^3.2.2",
-    "vue": "^3.5.33",
-    "vue-router": "^5.0.6"
+    "vue": "^3.5.34",
+    "vue-router": "^5.0.7"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^8.2.0",
