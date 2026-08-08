@@ -7,25 +7,32 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "pnpm run build && wrangler dev",
+    "typecheck": "tsc -b",
+    "test": "vitest run --config vitest.config.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix",
     "deploy": "pnpm run build && wrangler deploy"
   },
   "dependencies": {
+    "@modelcontextprotocol/server": "2.0.0",
     "@nuxt/ui": "^4.7.1",
     "@shikijs/langs": "^4.1.0",
     "@shikijs/themes": "^4.1.0",
     "@vueuse/core": "^14.3.0",
+    "agents": "^0.20.1",
     "defu": "^6.1.7",
+    "evlog": "^2.24.0",
     "modern-screenshot": "^4.7.0",
     "reka-ui": "2.6.0",
     "shiki": "^4.1.0",
     "tailwind-variants": "^3.2.2",
     "vue": "^3.5.34",
-    "vue-router": "^5.0.7"
+    "vue-router": "^5.0.7",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^8.2.0",
+    "@cloudflare/workers-types": "^4.20260702.1",
     "@iconify-json/ph": "^1.2.2",
     "@soubiran/vite": "^0.7.0",
     "@types/node": "^25.6.0",
@@ -36,6 +43,7 @@
     "typescript": "~6.0.3",
     "unplugin-icons": "^23.0.1",
     "vite": "^8.0.10",
+    "vitest": "^4.1.10",
     "wrangler": "^4.87.0"
   }
 }

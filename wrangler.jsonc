@@ -2,6 +2,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "code-soubiran-dev",
   "compatibility_date": "2026-04-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./src/server/index.ts",
   "routes": [
     {
       "pattern": "code.soubiran.dev",
@@ -11,6 +13,7 @@
   ],
   "workers_dev": true,
   "assets": {
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/mcp"]
   }
 }

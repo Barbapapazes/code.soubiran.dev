@@ -18,6 +18,7 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
+    "src/shared/**/*.ts",
     "src/app/**/*.ts",
     "src/app/**/*.vue",
     "src/app/auto-imports.d.ts",

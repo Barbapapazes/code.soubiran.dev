@@ -1,11 +1,11 @@
 import type { HighlighterCore } from 'shiki/core'
-import type { Language } from '@/app/types/language'
+import type { CodeImageLanguage } from '@/shared/code-image'
 import { createHighlighterCore } from 'shiki/core'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 
 let highlighter: HighlighterCore | null = null
 
-export async function useShiki(code: MaybeRefOrGetter<string>, lang: MaybeRefOrGetter<Language>) {
+export async function useShiki(code: MaybeRefOrGetter<string>, lang: MaybeRefOrGetter<CodeImageLanguage>) {
   if (!highlighter) {
     highlighter = await createHighlighterCore({
       themes: [
@@ -24,7 +24,7 @@ export async function useShiki(code: MaybeRefOrGetter<string>, lang: MaybeRefOrG
     })
   }
 
-  function codeToHtml(code: string, lang: Language) {
+  function codeToHtml(code: string, lang: CodeImageLanguage) {
     return highlighter!.codeToHtml(code, {
       lang,
       themes: {

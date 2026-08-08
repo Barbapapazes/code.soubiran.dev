@@ -1,10 +1,40 @@
 {
   "version": 1,
   "skills": {
-    "vue-tailwind-variants-component": {
-      "source": "Barbapapazes/skills",
-      "sourceType": "github",
-      "computedHash": "84e1cc465b43f2c143f311bc8742f667ddc19efa16da4d886e2d6453e8c51d5c"
+    "typescript-build": {
+      "source": "soubiran.dev",
+      "sourceUrl": "https://soubiran.dev",
+      "sourceType": "well-known",
+      "computedHash": "8958d7a06f1fc6a18f8b399431fa85dfdd80f93ff41c7c6d30dbd6211d119a58",
+      "wellKnownDigest": "sha256:b737b41a44c15c94a26491e73579e6ffc22daf324165c0c413fbc5730378c66b"
+    },
+    "typescript-lint": {
+      "source": "soubiran.dev",
+      "sourceUrl": "https://soubiran.dev",
+      "sourceType": "well-known",
+      "computedHash": "cee6a50e05d6390acbd69fccf8a8c1c164ba5ef35613678d3bb11d02a9b3df0b",
+      "wellKnownDigest": "sha256:c5491720c9fb69d264aaf09d0ae3bc8379b85ee68f4bc29fd136f093080404fa"
+    },
+    "typescript-reformat": {
+      "source": "soubiran.dev",
+      "sourceUrl": "https://soubiran.dev",
+      "sourceType": "well-known",
+      "computedHash": "cc7989750fd2d7532e2c08a1760cf559eeb2334c172e35c58ca3ef0499e1a541",
+      "wellKnownDigest": "sha256:4b2946bb7193a0349972472a12d85aaf014c9deb3c228431bf9d79f15d289a48"
+    },
+    "typescript-typecheck": {
+      "source": "soubiran.dev",
+      "sourceUrl": "https://soubiran.dev",
+      "sourceType": "well-known",
+      "computedHash": "7836de85c554c178f9758c736992521e716dc4f122bea9f4652827ffcf92e912",
+      "wellKnownDigest": "sha256:1861d53d2441c99007bad71dbc50f228303fe898277eae91f07719fda110de35"
+    },
+    "vue-component-create": {
+      "source": "soubiran.dev",
+      "sourceUrl": "https://soubiran.dev",
+      "sourceType": "well-known",
+      "computedHash": "f337d0a1dc5dd177676c35e75b33aac57b58c297fea33ceba8d30c1e7038c60e",
+      "wellKnownDigest": "sha256:d3a6702143bd9cd3aff0b7f1c37f5083aaf4660b74925566e802936e4f88eea2"
     }
   }
 }

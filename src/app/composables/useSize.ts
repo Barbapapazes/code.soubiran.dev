@@ -1,7 +1,7 @@
-import type { Size } from '@/app/types/size'
+import type { CodeImageSize } from '@/shared/code-image'
 import { params } from '@/app/state/params'
 
-const size = ref<Size>('md')
+const size = ref<CodeImageSize>('md')
 export function useSize() {
   size.value = params.size || 'md'
 

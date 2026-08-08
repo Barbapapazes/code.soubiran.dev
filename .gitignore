@@ -6,3 +6,4 @@ worker-configuration.d.ts
 auto-imports.d.ts
 components.d.ts
 .env
+.dev.vars*

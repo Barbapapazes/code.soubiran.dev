@@ -1,7 +1,7 @@
-import type { Language } from '@/app/types/language'
+import type { CodeImageLanguage } from '@/shared/code-image'
 import { params } from '@/app/state/params'
 
-const language = ref<Language>('markdown')
+const language = ref<CodeImageLanguage>('markdown')
 const languages = [
   { label: 'HTML', value: 'html' },
   { label: 'JSON', value: 'json' },
@@ -9,7 +9,7 @@ const languages = [
   { label: 'PHP', value: 'php' },
   { label: 'TypeScript', value: 'typescript' },
   { label: 'Vue', value: 'vue' },
-] satisfies { label: string, value: Language }[]
+] satisfies { label: string, value: CodeImageLanguage }[]
 
 export function useLanguage() {
   language.value = params.language || 'markdown'

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Language } from '@/app/types/language'
+import type { CodeImageLanguage } from '@/shared/code-image'
 
 const render = tv({
   slots: {
@@ -8,7 +8,7 @@ const render = tv({
 })
 
 export interface RenderProps {
-  language: Language
+  language: CodeImageLanguage
   code: string
   class?: any
   ui?: Partial<typeof render.slots>

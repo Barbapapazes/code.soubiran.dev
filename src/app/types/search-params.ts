@@ -1,6 +1,8 @@
 import type { Gradient } from '@/app/types/gradient'
-import type { Language } from '@/app/types/language'
-import type { Size } from '@/app/types/size'
+import type {
+  CodeImageLanguage,
+  CodeImageSize,
+} from '@/shared/code-image'
 
 export interface SearchParams {
   /**
@@ -10,11 +12,11 @@ export interface SearchParams {
   /**
    * Language of the code block.
    */
-  language?: Language
+  language?: CodeImageLanguage
   /**
    * Size of the code block.
    */
-  size?: Size
+  size?: CodeImageSize
   /**
    * Watermark text to display under the code block.
    */
