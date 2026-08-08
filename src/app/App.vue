@@ -1,6 +1,5 @@
 <script lang="ts">
 import type { SelectItem } from '@nuxt/ui'
-import type { Gradient } from '@/app/types/gradient'
 import camera from '~icons/ph/camera'
 import moon from '~icons/ph/moon'
 import sun from '~icons/ph/sun'
@@ -11,11 +10,11 @@ const app = tv({
     base: 'w-screen h-screen p-4 bg-default text-default flex flex-col items-center justify-center gap-8',
     layout: 'w-full flex flex-col gap-8',
     canvas: 'relative',
-    controls: 'absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex flex-col gap-2',
+    controls: 'absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex flex-col gap-6',
     toolbar: 'flex justify-between gap-2',
     sizeSelect: 'w-28',
     languageSelect: 'w-32',
-    gradientSelect: 'w-28',
+    gradientSelector: '',
   },
 })
 
@@ -61,8 +60,6 @@ const sizes: SelectItem[] = [
 const { language, languages } = useLanguage()
 
 const { gradient } = useGradient()
-const gradients: SelectItem[] = (['purple', 'blue', 'green', 'orange', 'pink', 'red'] satisfies Gradient[])
-  .map(grad => ({ label: grad.charAt(0).toUpperCase() + grad.slice(1), value: grad }))
 
 const maxWidthClass = computed(() => {
   switch (size.value) {
@@ -96,13 +93,18 @@ const ui = computed(() => app())
       </EditorWrapper>
 
       <div :class="ui.controls({ class: props.ui?.controls })">
+        <GradientSelector
+          v-model="gradient"
+          :class="ui.gradientSelector({ class: props.ui?.gradientSelector })"
+        />
+
         <div :class="ui.toolbar({ class: props.ui?.toolbar })">
           <UFieldGroup>
             <UButton
               :icon="isDark ? moon : sun"
               color="neutral"
               variant="subtle"
-              @click="toggleDark()"
+              @click="() => { toggleDark() }"
             />
 
             <USelect
@@ -119,14 +121,6 @@ const ui = computed(() => app())
               color="neutral"
               variant="subtle"
               :class="ui.languageSelect({ class: props.ui?.languageSelect })"
-            />
-
-            <USelect
-              v-model="gradient"
-              :items="gradients"
-              color="neutral"
-              variant="subtle"
-              :class="ui.gradientSelect({ class: props.ui?.gradientSelect })"
             />
           </UFieldGroup>
 
