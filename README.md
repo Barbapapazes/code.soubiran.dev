@@ -1,74 +1,31 @@
-# Code Screenshot Generator
+# code.soubiran.dev
 
-A beautiful and simple tool to create stunning screenshots of your code snippets with syntax highlighting and customizable options.
+Create and share beautiful, syntax-highlighted images of your code.
 
-## Features
+[Open the editor](https://code.soubiran.dev) or use the [MCP server](https://code.soubiran.dev/mcp) to generate code images with an agent.
 
-- **Syntax Highlighting**: Support for multiple programming languages (TypeScript, Markdown, PHP, JSON, HTML, Vue)
-- **Customizable Size**: Choose from Small, Medium, Large, or Extra Large canvas sizes
-- **Dark/Light Mode**: Toggle between dark and light themes
-- **Custom Watermark**: Add your own editable watermark to screenshots
-- **High Quality**: Export screenshots to images
-- **URL Parameters**: Share your configuration via URL (`code`, `language`, `size`, `gradient`, `watermark`, and `title`)
-- **MCP Tool**: Let agents generate a code image with the focused `generate_code_image` tool
+## Use it Manually
 
-## Getting Started
+1. Paste or write your code in the editor.
+2. Choose a language, canvas size, gradient, and light or dark appearance.
+3. Optionally add a title and watermark.
+4. Select **Capture** to download the image.
 
-### Prerequisites
+Its state is stored in the URL, so you can share a configured code card with others.
 
-- Node.js
-- pnpm
+## Use it with an Agent
 
-### Installation
+Connect an MCP-compatible client to `https://code.soubiran.dev/mcp` to use the public `generate_code_image` tool. It generates a PNG code card from `code` and accepts optional `language`, `size`, `gradient`, `title`, and `watermark` values.
 
-1. Clone the repository:
-```bash
-git clone https://github.com/Barbapapazes/code.soubiran.dev.git
-cd code.soubiran.dev
-```
 
-2. Install dependencies:
-```bash
-pnpm install
-```
+## Sponsors
 
-### Development
+<p align="center">
+	<a href="https://github.com/sponsors/barbapapazes">
+		<img src="https://cdn.jsdelivr.net/gh/barbapapazes/static/sponsors.svg" alt="Sponsors">
+	</a>
+</p>
 
-Start the development server:
+## License
 
-```bash
-pnpm dev
-```
-
-The application will be available at `http://localhost:5173`.
-
-### MCP and Kitesurf
-
-The deployed MCP server is available at `https://code.soubiran.dev/mcp`. Its `generate_code_image` tool accepts the same configurable values as the editor (`code`, `language`, `size`, `gradient`, `title`, and `watermark`) and returns a PNG image of the complete code card.
-
-The Worker is stateless and calls Cloudflare Browser Run's Kitesurf engine. Configure these values before running the Worker locally or deploying it:
-
-- `BROWSER_RUN_ACCOUNT_ID`: the Cloudflare account ID that owns Browser Run.
-- `BROWSER_RUN_API_TOKEN`: a Cloudflare API token with only the `Browser Rendering - Edit` permission.
-
-Copy the placeholder values in `.dev.vars` for local Worker development and configure the production values as Wrangler secrets. Never expose the API token to MCP clients or frontend code.
-
-The MCP endpoint is intentionally public. Configure a Cloudflare WAF or rate-limiting rule for `POST /mcp` before production deployment, because every tool invocation consumes Browser Run quota.
-
-### Build
-
-Build the application for production:
-
-```bash
-pnpm build
-```
-
-The built files will be in the `dist/` directory.
-
-### Preview
-
-Preview the production build locally:
-
-```bash
-pnpm preview
-```
+[MIT](LICENSE) License © 2026-PRESENT [Estéban Soubiran](https://github.com/Barbapapazes)
