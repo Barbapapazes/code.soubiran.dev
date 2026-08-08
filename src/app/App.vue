@@ -4,6 +4,7 @@ import camera from '~icons/ph/camera'
 import moon from '~icons/ph/moon'
 import sun from '~icons/ph/sun'
 import Watermark from '@/app/components/Watermark.vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 
 const app = tv({
   slots: {
@@ -18,12 +19,12 @@ const app = tv({
   },
 })
 
-export interface AppProps {
+interface AppProps {
   class?: any
   ui?: Partial<typeof app.slots>
 }
-export interface AppEmits {}
-export interface AppSlots {}
+interface AppEmits {}
+interface AppSlots {}
 </script>
 
 <script lang="ts" setup>
@@ -33,6 +34,9 @@ defineSlots<AppSlots>()
 
 const editor = ref<{ el?: HTMLElement }>()
 const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
+const { code } = useCode()
+const { title } = useCodeTitle()
+const { watermark } = useWatermark()
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
@@ -60,6 +64,26 @@ const sizes: SelectItem[] = [
 const { language, languages } = useLanguage()
 
 const { gradient } = useGradient()
+
+let webMcpAbortController: AbortController | undefined
+onMounted(() => {
+  const controller = new AbortController()
+  webMcpAbortController = controller
+
+  void registerWebMcpTools({
+    code,
+    language,
+    size,
+    gradient,
+    title,
+    watermark,
+    capture: captureScreenshot,
+  }, controller.signal).catch(() => controller.abort())
+})
+
+onBeforeUnmount(() => {
+  webMcpAbortController?.abort()
+})
 
 const maxWidthClass = computed(() => {
   switch (size.value) {
