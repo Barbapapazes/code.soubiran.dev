@@ -1,7 +1,6 @@
 <script lang="ts">
 import type { SelectItem } from '@nuxt/ui'
 import type { Gradient } from '@/app/types/gradient'
-import type { Language } from '@/app/types/language'
 import camera from '~icons/ph/camera'
 import moon from '~icons/ph/moon'
 import sun from '~icons/ph/sun'
@@ -59,10 +58,7 @@ const sizes: SelectItem[] = [
   },
 ]
 
-const { language } = useLanguage()
-const languages: SelectItem[] = (['typescript', 'markdown', 'php', 'json', 'html', 'vue'] satisfies Language[])
-  .sort()
-  .map(lang => ({ label: lang, value: lang }))
+const { language, languages } = useLanguage()
 
 const { gradient } = useGradient()
 const gradients: SelectItem[] = (['purple', 'blue', 'green', 'orange', 'pink', 'red'] satisfies Gradient[])
