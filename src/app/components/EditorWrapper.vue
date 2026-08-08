@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { Gradient } from '@/app/types/gradient'
 import { gradients } from '@/app/types/gradient'
+import { codeImageSelector } from '@/shared/code-image'
 
 const editorWrapper = tv({
   slots: {
@@ -36,7 +37,11 @@ const ui = computed(() => editorWrapper())
 </script>
 
 <template>
-  <div ref="el" :class="ui.base({ class: [props.ui?.base, gradientClass, props.class] })">
+  <div
+    ref="el"
+    :class="ui.base({ class: [props.ui?.base, gradientClass, props.class] })"
+    :data-code-image="codeImageSelector"
+  >
     <slot />
   </div>
 </template>
