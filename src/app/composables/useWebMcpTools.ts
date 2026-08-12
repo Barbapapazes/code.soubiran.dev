@@ -52,13 +52,13 @@ export async function registerWebMcpTools(state: WebMcpEditorState, signal: Abor
   const tools = [
     {
       name: 'set_code',
-      description: 'Replace the code in the image editor with the provided text.',
+      description: 'Set the complete source code shown in the code image editor. Use this whenever the user supplies code they want displayed, changed, rendered, or captured. It may run in parallel with set_code_image_options; both must succeed before capture_code_image.',
       inputSchema: {
         type: 'object',
         properties: {
           code: {
             type: 'string',
-            description: 'The complete code to display in the image editor.',
+            description: 'The complete replacement source code to display. Preserve the user-provided text exactly, including whitespace and line breaks.',
           },
         },
         required: ['code'],
@@ -74,7 +74,7 @@ export async function registerWebMcpTools(state: WebMcpEditorState, signal: Abor
     },
     {
       name: 'set_code_image_options',
-      description: 'Update one or more image editor options: language, canvas size, gradient, title, or watermark.',
+      description: 'Set one or more visual options for the current code image: language, canvas size, background gradient, title, or watermark. Use only for options the user explicitly requests. It may run in parallel with set_code; both must succeed before capture_code_image.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -163,7 +163,7 @@ export async function registerWebMcpTools(state: WebMcpEditorState, signal: Abor
     },
     {
       name: 'capture_code_image',
-      description: 'Download the current code image as a PNG file named screenshot.png.',
+      description: 'Capture and download the current code image as screenshot.png. Call this only after all requested code and image-option updates have completed successfully.',
       inputSchema: {
         type: 'object',
         properties: {},

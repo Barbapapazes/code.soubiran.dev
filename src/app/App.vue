@@ -1,14 +1,15 @@
 <script lang="ts">
 import type { SelectItem } from '@nuxt/ui'
+import { onBeforeUnmount, onMounted } from 'vue'
 import camera from '~icons/ph/camera'
 import moon from '~icons/ph/moon'
+import sparkle from '~icons/ph/sparkle'
 import sun from '~icons/ph/sun'
 import Watermark from '@/app/components/Watermark.vue'
-import { onBeforeUnmount, onMounted } from 'vue'
 
 const app = tv({
   slots: {
-    base: 'w-screen h-screen p-4 bg-default text-default flex flex-col items-center justify-center gap-8',
+    base: 'relative h-screen min-w-0 flex-1 p-4 bg-default text-default flex flex-col items-center justify-center gap-8',
     layout: 'w-full flex flex-col gap-8',
     canvas: 'relative',
     controls: 'absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex flex-col gap-6',
@@ -37,6 +38,7 @@ const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
 const { code } = useCode()
 const { title } = useCodeTitle()
 const { watermark } = useWatermark()
+const localAssistant = useLocalAssistant()
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
@@ -66,7 +68,14 @@ const { language, languages } = useLanguage()
 const { gradient } = useGradient()
 
 let webMcpAbortController: AbortController | undefined
+function checkLocalAssistantAvailability() {
+  void localAssistant.checkAvailability()
+}
+
 onMounted(() => {
+  checkLocalAssistantAvailability()
+  window.addEventListener('focus', checkLocalAssistantAvailability)
+
   const controller = new AbortController()
   webMcpAbortController = controller
 
@@ -82,6 +91,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  window.removeEventListener('focus', checkLocalAssistantAvailability)
   webMcpAbortController?.abort()
 })
 
@@ -104,59 +114,77 @@ const ui = computed(() => app())
 </script>
 
 <template>
-  <main :class="ui.base({ class: [props.ui?.base, props.class] })">
-    <div :class="ui.layout({ class: [props.ui?.layout, maxWidthClass] })">
-      <EditorWrapper
-        ref="editor"
-        :gradient="gradient"
-        :class="ui.canvas({ class: props.ui?.canvas })"
-      >
-        <Editor class="shadow-lg" />
+  <div class="flex h-screen min-w-0 w-full">
+    <main :class="ui.base({ class: [props.ui?.base, props.class] })">
+      <div :class="ui.layout({ class: [props.ui?.layout, maxWidthClass] })">
+        <EditorWrapper
+          ref="editor"
+          :gradient="gradient"
+          :class="ui.canvas({ class: props.ui?.canvas })"
+        >
+          <Editor class="shadow-lg" />
 
-        <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
-      </EditorWrapper>
+          <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
+        </EditorWrapper>
 
-      <div :class="ui.controls({ class: props.ui?.controls })">
-        <GradientSelector
-          v-model="gradient"
-          :class="ui.gradientSelector({ class: props.ui?.gradientSelector })"
-        />
-
-        <div :class="ui.toolbar({ class: props.ui?.toolbar })">
-          <UFieldGroup>
-            <UButton
-              :icon="isDark ? moon : sun"
-              color="neutral"
-              variant="subtle"
-              @click="() => { toggleDark() }"
-            />
-
-            <USelect
-              v-model="size"
-              :items="sizes"
-              color="neutral"
-              variant="subtle"
-              :class="ui.sizeSelect({ class: props.ui?.sizeSelect })"
-            />
-
-            <USelect
-              v-model="language"
-              :items="languages"
-              color="neutral"
-              variant="subtle"
-              :class="ui.languageSelect({ class: props.ui?.languageSelect })"
-            />
-          </UFieldGroup>
-
-          <UButton
-            :icon="camera"
-            label="Capture"
-            color="neutral"
-            variant="solid"
-            @click="captureScreenshot"
+        <div :class="ui.controls({ class: props.ui?.controls })">
+          <GradientSelector
+            v-model="gradient"
+            :class="ui.gradientSelector({ class: props.ui?.gradientSelector })"
           />
+
+          <div :class="ui.toolbar({ class: props.ui?.toolbar })">
+            <UFieldGroup>
+              <UButton
+                :icon="isDark ? moon : sun"
+                color="neutral"
+                variant="subtle"
+                @click="() => { toggleDark() }"
+              />
+
+              <USelect
+                v-model="size"
+                :items="sizes"
+                color="neutral"
+                variant="subtle"
+                :class="ui.sizeSelect({ class: props.ui?.sizeSelect })"
+              />
+
+              <USelect
+                v-model="language"
+                :items="languages"
+                color="neutral"
+                variant="subtle"
+                :class="ui.languageSelect({ class: props.ui?.languageSelect })"
+              />
+            </UFieldGroup>
+
+            <UFieldGroup>
+              <UButton
+                v-if="localAssistant.isVisible.value"
+                :icon="sparkle"
+                label="Assistant"
+                color="neutral"
+                variant="subtle"
+                @click="localAssistant.open"
+              />
+
+              <UButton
+                :icon="camera"
+                label="Capture"
+                color="neutral"
+                variant="solid"
+                @click="captureScreenshot"
+              />
+            </UFieldGroup>
+          </div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
+
+    <AssistantPanel
+      v-if="localAssistant.isVisible.value"
+      class="shrink-0 w-(--sidebar-width) transition-[width] duration-200 ease-linear motion-reduce:transition-none data-[state=collapsed]:w-0"
+    />
+  </div>
 </template>

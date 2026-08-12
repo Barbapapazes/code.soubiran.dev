@@ -1,0 +1,10 @@
+shellEmulator: true
+
+trustPolicy: no-downgrade
+
+allowBuilds:
+  core-js-pure: false
+  esbuild: false
+  sharp: false
+  vue-demi: false
+  workerd: false

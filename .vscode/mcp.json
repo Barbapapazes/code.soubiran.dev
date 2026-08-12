@@ -3,6 +3,21 @@
     "cloudflare": {
       "url": "https://mcp.cloudflare.com/mcp",
       "type": "http"
+    },
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp",
+      "type": "http",
+      "headers": {
+        "X-MCP-Toolsets": "repos,issues,pull_requests",
+        "X-MCP-Readonly": "true"
+      }
+    },
+    "nuxt-ui": {
+      "url": "https://ui.nuxt.com/mcp",
+      "type": "http",
+      "headers": {
+        "X-MCP-Tools": "search-components,search-composables,search-icons,get-component"
+      }
     }
   },
   "inputs": []
