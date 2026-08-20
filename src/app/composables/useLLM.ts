@@ -1,6 +1,5 @@
 import type { BrowserAIChatLanguageModel } from '@browser-ai/core'
 import { browserAI, doesBrowserSupportBrowserAI } from '@browser-ai/core'
-import { computed, ref } from 'vue'
 
 export type LLMAvailability
   = | 'checking'
@@ -15,7 +14,6 @@ export function useLLM() {
   const availability = ref<LLMAvailability>('checking')
   const downloadProgress = ref<number>()
   const initializationError = ref<string>()
-  const isReady = ref(false)
   const model = ref<BrowserAIChatLanguageModel>()
   let initializationPromise: Promise<void> | undefined
 
@@ -30,7 +28,6 @@ export function useLLM() {
   async function checkAvailability() {
     if (!doesBrowserSupportBrowserAI()) {
       availability.value = 'unavailable'
-      isReady.value = false
       return
     }
 
@@ -39,23 +36,19 @@ export function useLLM() {
 
       if (nextAvailability === 'available') {
         availability.value = 'available'
-        isReady.value = true
         initializationError.value = undefined
         return
       }
 
       if (nextAvailability === 'downloadable') {
         availability.value = 'downloadable'
-        isReady.value = false
         return
       }
 
       availability.value = 'unavailable'
-      isReady.value = false
     }
     catch {
       availability.value = 'unavailable'
-      isReady.value = false
     }
   }
 
@@ -76,11 +69,9 @@ export function useLLM() {
 
       downloadProgress.value = 100
       availability.value = 'available'
-      isReady.value = true
     })().catch((cause: unknown) => {
       initializationError.value = getErrorMessage(cause)
       availability.value = 'error'
-      isReady.value = false
     }).finally(() => {
       initializationPromise = undefined
     })
@@ -94,8 +85,6 @@ export function useLLM() {
     downloadProgress,
     getModel,
     initializationError,
-    isReady,
-    isVisible: computed(() => availability.value !== 'checking' && availability.value !== 'unavailable'),
     initialize,
   }
 }

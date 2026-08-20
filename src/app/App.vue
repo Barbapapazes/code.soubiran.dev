@@ -36,6 +36,14 @@ const props = defineProps<AppProps>()
 defineEmits<AppEmits>()
 defineSlots<AppSlots>()
 
+const { availability, checkAvailability, initialize, downloadProgress } = useLLM()
+onMounted(async () => {
+  await checkAvailability()
+})
+async function initializeAssistant() {
+  await initialize()
+}
+
 const isOpen = ref<boolean>(false)
 function open() {
   isOpen.value = true
@@ -153,6 +161,22 @@ const ui = computed(() => app())
 
             <UFieldGroup>
               <UButton
+                v-if="availability === 'downloadable'"
+                :icon="sparkle"
+                label="Initialize Assistant"
+                color="neutral"
+                variant="subtle"
+                @click="initializeAssistant()"
+              />
+              <UButton
+                v-else-if="availability === 'downloading'"
+                loading
+                :label="`Downloading Assistant (${downloadProgress}%)`"
+                color="neutral"
+                variant="subtle"
+              />
+              <UButton
+                v-else-if="availability !== 'unavailable' && availability !== 'checking'"
                 :icon="sparkle"
                 label="Assistant"
                 color="neutral"
