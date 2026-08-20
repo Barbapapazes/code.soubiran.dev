@@ -44,8 +44,6 @@ export interface WebMCPClient {
   executeTool: (tool: WebMCP.RegisteredTool, input: Record<string, unknown>, options?: WebMcpCallToolOptions) => Promise<unknown>
   tools: () => Promise<ToolSet>
   toolsFromDefinitions: (definitions: readonly WebMCP.RegisteredTool[]) => ToolSet
-  onToolChange: (listener: () => void) => () => void
-  close: () => Promise<void>
 }
 
 function isToolDescriptor(value: unknown): value is WebMCP.RegisteredTool {
@@ -74,27 +72,17 @@ function getDefaultDocument() {
   return globalThis.document as WebMcpDocument | undefined
 }
 
-export async function createWebMCPClient(options: CreateWebMCPClientOptions = {}): Promise<WebMCPClient> {
+export function createWebMCPClient(options: CreateWebMCPClientOptions = {}): WebMCPClient {
   const document = options.document ?? getDefaultDocument()
   const modelContext = document?.modelContext
   const fromOrigins = [...(options.fromOrigins ?? [])]
   const allowedOrigins = new Set([document?.defaultView?.location.origin, ...fromOrigins])
-  const cleanups = new Set<() => void>()
-  let closed = false
-
-  function assertOpen() {
-    if (closed) {
-      throw new Error('WebMCP client is closed.')
-    }
-  }
 
   function isAvailable() {
     return Boolean(modelContext?.getTools && modelContext.executeTool)
   }
 
   async function listTools() {
-    assertOpen()
-
     if (!modelContext?.executeTool) {
       return []
     }
@@ -108,8 +96,6 @@ export async function createWebMCPClient(options: CreateWebMCPClientOptions = {}
     input: Record<string, unknown>,
     callOptions: WebMcpCallToolOptions = {},
   ) {
-    assertOpen()
-
     if (!modelContext?.executeTool) {
       throw new Error('WebMCP tools are unavailable in this browser.')
     }
@@ -169,36 +155,6 @@ export async function createWebMCPClient(options: CreateWebMCPClientOptions = {}
     return toolsFromDefinitions(await listTools())
   }
 
-  function onToolChange(listener: () => void) {
-    assertOpen()
-
-    if (!modelContext) {
-      return () => {}
-    }
-
-    const eventListener = () => listener()
-    modelContext.addEventListener('toolchange', eventListener)
-    const unsubscribe = () => modelContext.removeEventListener('toolchange', eventListener)
-    cleanups.add(unsubscribe)
-
-    return () => {
-      cleanups.delete(unsubscribe)
-      unsubscribe()
-    }
-  }
-
-  async function close() {
-    if (closed) {
-      return
-    }
-
-    closed = true
-    for (const cleanup of cleanups) {
-      cleanup()
-    }
-    cleanups.clear()
-  }
-
   return {
     get availability() {
       return isAvailable() ? 'available' : 'unavailable'
@@ -208,7 +164,5 @@ export async function createWebMCPClient(options: CreateWebMCPClientOptions = {}
     executeTool,
     tools,
     toolsFromDefinitions,
-    onToolChange,
-    close,
   }
 }

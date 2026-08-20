@@ -1,11 +1,14 @@
 <script lang="ts">
 import type { SelectItem } from '@nuxt/ui'
-import { onBeforeUnmount, onMounted } from 'vue'
 import camera from '~icons/ph/camera'
 import moon from '~icons/ph/moon'
 import sparkle from '~icons/ph/sparkle'
 import sun from '~icons/ph/sun'
 import Watermark from '@/app/components/Watermark.vue'
+import { useWebMCP } from '@/app/composables/useWebMCP'
+import { createCaptureCodeTool } from '@/app/tools/captureCode'
+import { createSetCodeTool } from '@/app/tools/setCode'
+import { createSetCodeOptionsTool } from '@/app/tools/setCodeOptions'
 
 const app = tv({
   slots: {
@@ -33,17 +36,38 @@ const props = defineProps<AppProps>()
 defineEmits<AppEmits>()
 defineSlots<AppSlots>()
 
-const editor = ref<{ el?: HTMLElement }>()
-const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
-const { code } = useCode()
-const { title } = useCodeTitle()
-const { watermark } = useWatermark()
-const localAssistant = useLocalAssistant()
+const isOpen = ref<boolean>(false)
+function open() {
+  isOpen.value = true
+}
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
+const editor = ref<{ el?: HTMLElement }>()
+const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
+
+const { code } = useCode()
+const { title } = useCodeTitle()
+const { watermark } = useWatermark()
 const { size } = useSize()
+const { language, languages } = useLanguage()
+const { gradient } = useGradient()
+
+const setCodeTool = createSetCodeTool(code)
+const setCodeImageOptionsTool = createSetCodeOptionsTool({
+  language,
+  size,
+  gradient,
+  title,
+  watermark,
+})
+const captureCodeImageTool = createCaptureCodeTool(captureScreenshot)
+
+useWebMCP(setCodeTool)
+useWebMCP(setCodeImageOptionsTool)
+useWebMCP(captureCodeImageTool)
+
 const sizes: SelectItem[] = [
   {
     label: 'Small',
@@ -63,38 +87,6 @@ const sizes: SelectItem[] = [
   },
 ]
 
-const { language, languages } = useLanguage()
-
-const { gradient } = useGradient()
-
-let webMcpAbortController: AbortController | undefined
-function checkLocalAssistantAvailability() {
-  void localAssistant.checkAvailability()
-}
-
-onMounted(() => {
-  checkLocalAssistantAvailability()
-  window.addEventListener('focus', checkLocalAssistantAvailability)
-
-  const controller = new AbortController()
-  webMcpAbortController = controller
-
-  void registerWebMcpTools({
-    code,
-    language,
-    size,
-    gradient,
-    title,
-    watermark,
-    capture: captureScreenshot,
-  }, controller.signal).catch(() => controller.abort())
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('focus', checkLocalAssistantAvailability)
-  webMcpAbortController?.abort()
-})
-
 const maxWidthClass = computed(() => {
   switch (size.value) {
     case 'sm':
@@ -107,7 +99,7 @@ const maxWidthClass = computed(() => {
       return 'max-w-screen-xl'
   }
 
-  return 'max-w-screen-sm'
+  throw new Error(`Unknown size: ${size.value}`)
 })
 
 const ui = computed(() => app())
@@ -161,12 +153,11 @@ const ui = computed(() => app())
 
             <UFieldGroup>
               <UButton
-                v-if="localAssistant.isVisible.value"
                 :icon="sparkle"
                 label="Assistant"
                 color="neutral"
                 variant="subtle"
-                @click="localAssistant.open"
+                @click="open"
               />
 
               <UButton
@@ -183,7 +174,7 @@ const ui = computed(() => app())
     </main>
 
     <AssistantPanel
-      v-if="localAssistant.isVisible.value"
+      v-model:open="isOpen"
       class="shrink-0 w-(--sidebar-width) transition-[width] duration-200 ease-linear motion-reduce:transition-none data-[state=collapsed]:w-0"
     />
   </div>

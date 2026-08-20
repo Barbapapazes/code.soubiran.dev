@@ -95,34 +95,16 @@ describe('createWebMCPClient', () => {
     await expect(ambiguousClient.tools()).resolves.toEqual({})
   })
 
-  it('removes managed listeners and blocks new operations after close', async () => {
-    let listener: (() => void) | undefined
-    const removeEventListener = vi.fn()
+  it('lists the initially available tools without subscribing to changes', async () => {
+    const getTools = vi.fn(async () => [tool()])
     const client = await createWebMCPClient({
       document: createDocument({
         executeTool: vi.fn(),
-        getTools: async () => [],
-        addEventListener: (_type: string, nextListener: EventListenerOrEventListenerObject) => {
-          listener = () => {
-            if (typeof nextListener === 'function') {
-              nextListener(new Event('toolchange'))
-              return
-            }
-
-            nextListener.handleEvent(new Event('toolchange'))
-          }
-        },
-        removeEventListener,
+        getTools,
       }),
     })
-    const callback = vi.fn()
 
-    client.onToolChange(callback)
-    listener?.()
-    expect(callback).toHaveBeenCalledOnce()
-
-    await client.close()
-    expect(removeEventListener).toHaveBeenCalledOnce()
-    await expect(client.listTools()).rejects.toThrow('closed')
+    await expect(client.listTools()).resolves.toEqual([tool()])
+    expect(getTools).toHaveBeenCalledOnce()
   })
 })
