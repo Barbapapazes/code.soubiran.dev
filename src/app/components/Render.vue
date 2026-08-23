@@ -3,7 +3,7 @@ import type { CodeImageLanguage } from '@/shared/code-image'
 
 const render = tv({
   slots: {
-    base: 'w-full h-full',
+    base: '',
   },
 })
 
