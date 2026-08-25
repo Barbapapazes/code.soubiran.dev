@@ -1,10 +1,10 @@
 <script lang="ts">
 import type { SelectItem } from '@nuxt/ui'
+import { onBeforeUnmount, onMounted } from 'vue'
 import camera from '~icons/ph/camera'
 import moon from '~icons/ph/moon'
 import sun from '~icons/ph/sun'
 import Watermark from '@/app/components/Watermark.vue'
-import { onBeforeUnmount, onMounted } from 'vue'
 
 const app = tv({
   slots: {
@@ -104,59 +104,61 @@ const ui = computed(() => app())
 </script>
 
 <template>
-  <main :class="ui.base({ class: [props.ui?.base, props.class] })">
-    <div :class="ui.layout({ class: [props.ui?.layout, maxWidthClass] })">
-      <EditorWrapper
-        ref="editor"
-        :gradient="gradient"
-        :class="ui.canvas({ class: props.ui?.canvas })"
-      >
-        <Editor class="shadow-lg" />
+  <UApp>
+    <main :class="ui.base({ class: [props.ui?.base, props.class] })">
+      <div :class="ui.layout({ class: [props.ui?.layout, maxWidthClass] })">
+        <EditorWrapper
+          ref="editor"
+          :gradient="gradient"
+          :class="ui.canvas({ class: props.ui?.canvas })"
+        >
+          <Editor class="shadow-lg" />
 
-        <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
-      </EditorWrapper>
+          <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
+        </EditorWrapper>
 
-      <div :class="ui.controls({ class: props.ui?.controls })">
-        <GradientSelector
-          v-model="gradient"
-          :class="ui.gradientSelector({ class: props.ui?.gradientSelector })"
-        />
-
-        <div :class="ui.toolbar({ class: props.ui?.toolbar })">
-          <UFieldGroup>
-            <UButton
-              :icon="isDark ? moon : sun"
-              color="neutral"
-              variant="subtle"
-              @click="() => { toggleDark() }"
-            />
-
-            <USelect
-              v-model="size"
-              :items="sizes"
-              color="neutral"
-              variant="subtle"
-              :class="ui.sizeSelect({ class: props.ui?.sizeSelect })"
-            />
-
-            <USelect
-              v-model="language"
-              :items="languages"
-              color="neutral"
-              variant="subtle"
-              :class="ui.languageSelect({ class: props.ui?.languageSelect })"
-            />
-          </UFieldGroup>
-
-          <UButton
-            :icon="camera"
-            label="Capture"
-            color="neutral"
-            variant="solid"
-            @click="captureScreenshot"
+        <div :class="ui.controls({ class: props.ui?.controls })">
+          <GradientSelector
+            v-model="gradient"
+            :class="ui.gradientSelector({ class: props.ui?.gradientSelector })"
           />
+
+          <div :class="ui.toolbar({ class: props.ui?.toolbar })">
+            <UFieldGroup>
+              <UButton
+                :icon="isDark ? moon : sun"
+                color="neutral"
+                variant="subtle"
+                @click="() => { toggleDark() }"
+              />
+
+              <USelect
+                v-model="size"
+                :items="sizes"
+                color="neutral"
+                variant="subtle"
+                :class="ui.sizeSelect({ class: props.ui?.sizeSelect })"
+              />
+
+              <USelect
+                v-model="language"
+                :items="languages"
+                color="neutral"
+                variant="subtle"
+                :class="ui.languageSelect({ class: props.ui?.languageSelect })"
+              />
+            </UFieldGroup>
+
+            <UButton
+              :icon="camera"
+              label="Capture"
+              color="neutral"
+              variant="solid"
+              @click="captureScreenshot"
+            />
+          </div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </UApp>
 </template>
