@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Gradient } from '@/app/types/gradient'
 import check from '~icons/ph/check'
-import { gradients } from '@/app/types/gradient'
+import { gradientNames, gradients, gradientValues } from '@/app/types/gradient'
 
 const gradientSelector = tv({
   slots: {
@@ -27,8 +27,6 @@ const props = defineProps<GradientSelectorProps>()
 const emit = defineEmits<GradientSelectorEmits>()
 defineSlots<GradientSelectorSlots>()
 
-const options = ['purple', 'blue', 'green', 'orange', 'pink', 'red'] satisfies Gradient[]
-
 const ui = computed(() => gradientSelector())
 </script>
 
@@ -38,22 +36,25 @@ const ui = computed(() => gradientSelector())
     role="group"
     aria-label="Background gradient"
   >
-    <button
-      v-for="gradient in options"
+    <UTooltip
+      v-for="gradient in gradientValues"
       :key="gradient"
-      type="button"
-      :class="ui.swatch({ class: [props.ui?.swatch, gradients[gradient]] })"
-      :aria-label="`${gradient} gradient`"
-      :aria-pressed="gradient === modelValue"
-      :title="`${gradient.charAt(0).toUpperCase() + gradient.slice(1)} gradient`"
-      @click="emit('update:modelValue', gradient)"
+      :text="gradientNames[gradient]"
     >
-      <component
-        :is="check"
-        v-if="gradient === modelValue"
-        :class="ui.icon({ class: props.ui?.icon })"
-        aria-hidden="true"
-      />
-    </button>
+      <button
+        type="button"
+        :class="ui.swatch({ class: [props.ui?.swatch, gradients[gradient]] })"
+        :aria-label="`${gradientNames[gradient]} gradient`"
+        :aria-pressed="gradient === modelValue"
+        @click="emit('update:modelValue', gradient)"
+      >
+        <component
+          :is="check"
+          v-if="gradient === modelValue"
+          :class="ui.icon({ class: props.ui?.icon })"
+          aria-hidden="true"
+        />
+      </button>
+    </UTooltip>
   </div>
 </template>

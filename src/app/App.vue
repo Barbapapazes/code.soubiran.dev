@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { SelectItem } from '@nuxt/ui'
+import { onBeforeUnmount, onMounted } from 'vue'
 import camera from '~icons/ph/camera'
 import moon from '~icons/ph/moon'
 import sparkle from '~icons/ph/sparkle'
@@ -114,7 +115,7 @@ const ui = computed(() => app())
 </script>
 
 <template>
-  <div class="flex h-screen min-w-0 w-full">
+  <UApp>
     <main :class="ui.base({ class: [props.ui?.base, props.class] })">
       <div :class="ui.layout({ class: [props.ui?.layout, maxWidthClass] })">
         <EditorWrapper
@@ -201,5 +202,5 @@ const ui = computed(() => app())
       v-model:open="isOpen"
       class="shrink-0 w-(--sidebar-width) transition-[width] duration-200 ease-linear motion-reduce:transition-none data-[state=collapsed]:w-0"
     />
-  </div>
+  </UApp>
 </template>
