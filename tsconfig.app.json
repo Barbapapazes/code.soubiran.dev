@@ -9,7 +9,9 @@
     },
     "types": [
       "vite/client",
-      "unplugin-icons/types/vue"
+      "unplugin-icons/types/vue",
+      "webmcp-types",
+      "dom-chromium-ai"
     ],
     "strict": true,
     "noFallthroughCasesInSwitch": true,

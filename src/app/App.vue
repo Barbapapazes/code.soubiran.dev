@@ -3,12 +3,17 @@ import type { SelectItem } from '@nuxt/ui'
 import { onBeforeUnmount, onMounted } from 'vue'
 import camera from '~icons/ph/camera'
 import moon from '~icons/ph/moon'
+import sparkle from '~icons/ph/sparkle'
 import sun from '~icons/ph/sun'
 import Watermark from '@/app/components/Watermark.vue'
+import { useWebMCP } from '@/app/composables/useWebMCP'
+import { createCaptureCodeTool } from '@/app/tools/captureCode'
+import { createSetCodeTool } from '@/app/tools/setCode'
+import { createSetCodeOptionsTool } from '@/app/tools/setCodeOptions'
 
 const app = tv({
   slots: {
-    base: 'w-screen h-screen p-4 bg-default text-default flex flex-col items-center justify-center gap-8',
+    base: 'relative h-screen min-w-0 flex-1 p-4 bg-default text-default flex flex-col items-center justify-center gap-8',
     layout: 'w-full flex flex-col gap-8',
     canvas: 'relative',
     controls: 'absolute bottom-8 inset-x-0 max-w-screen-sm mx-auto w-full flex flex-col gap-6',
@@ -32,16 +37,46 @@ const props = defineProps<AppProps>()
 defineEmits<AppEmits>()
 defineSlots<AppSlots>()
 
-const editor = ref<{ el?: HTMLElement }>()
-const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
-const { code } = useCode()
-const { title } = useCodeTitle()
-const { watermark } = useWatermark()
+const { availability, checkAvailability, initialize, downloadProgress } = useLLM()
+onMounted(async () => {
+  await checkAvailability()
+})
+async function initializeAssistant() {
+  await initialize()
+}
+
+const isOpen = ref<boolean>(false)
+function open() {
+  isOpen.value = true
+}
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
+const editor = ref<{ el?: HTMLElement }>()
+const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
+
+const { code } = useCode()
+const { title } = useCodeTitle()
+const { watermark } = useWatermark()
 const { size } = useSize()
+const { language, languages } = useLanguage()
+const { gradient } = useGradient()
+
+const setCodeTool = createSetCodeTool(code)
+const setCodeImageOptionsTool = createSetCodeOptionsTool({
+  language,
+  size,
+  gradient,
+  title,
+  watermark,
+})
+const captureCodeImageTool = createCaptureCodeTool(captureScreenshot)
+
+useWebMCP(setCodeTool)
+useWebMCP(setCodeImageOptionsTool)
+useWebMCP(captureCodeImageTool)
+
 const sizes: SelectItem[] = [
   {
     label: 'Small',
@@ -61,30 +96,6 @@ const sizes: SelectItem[] = [
   },
 ]
 
-const { language, languages } = useLanguage()
-
-const { gradient } = useGradient()
-
-let webMcpAbortController: AbortController | undefined
-onMounted(() => {
-  const controller = new AbortController()
-  webMcpAbortController = controller
-
-  void registerWebMcpTools({
-    code,
-    language,
-    size,
-    gradient,
-    title,
-    watermark,
-    capture: captureScreenshot,
-  }, controller.signal).catch(() => controller.abort())
-})
-
-onBeforeUnmount(() => {
-  webMcpAbortController?.abort()
-})
-
 const maxWidthClass = computed(() => {
   switch (size.value) {
     case 'sm':
@@ -97,7 +108,7 @@ const maxWidthClass = computed(() => {
       return 'max-w-screen-xl'
   }
 
-  return 'max-w-screen-sm'
+  throw new Error(`Unknown size: ${size.value}`)
 })
 
 const ui = computed(() => app())
@@ -149,16 +160,47 @@ const ui = computed(() => app())
               />
             </UFieldGroup>
 
-            <UButton
-              :icon="camera"
-              label="Capture"
-              color="neutral"
-              variant="solid"
-              @click="captureScreenshot"
-            />
+            <UFieldGroup>
+              <UButton
+                v-if="availability === 'downloadable'"
+                :icon="sparkle"
+                label="Initialize Assistant"
+                color="neutral"
+                variant="subtle"
+                @click="initializeAssistant()"
+              />
+              <UButton
+                v-else-if="availability === 'downloading'"
+                loading
+                :label="`Downloading Assistant (${downloadProgress}%)`"
+                color="neutral"
+                variant="subtle"
+              />
+              <UButton
+                v-else-if="availability !== 'unavailable' && availability !== 'checking'"
+                :icon="sparkle"
+                label="Assistant"
+                color="neutral"
+                variant="subtle"
+                @click="open"
+              />
+
+              <UButton
+                :icon="camera"
+                label="Capture"
+                color="neutral"
+                variant="solid"
+                @click="captureScreenshot"
+              />
+            </UFieldGroup>
           </div>
         </div>
       </div>
     </main>
+
+    <AssistantPanel
+      v-model:open="isOpen"
+      class="shrink-0 w-(--sidebar-width) transition-[width] duration-200 ease-linear motion-reduce:transition-none data-[state=collapsed]:w-0"
+    />
   </UApp>
 </template>
