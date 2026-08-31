@@ -2,7 +2,7 @@
   "name": "code.soubiran.dev",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@11.24.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -35,8 +35,8 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^8.2.0",
-    "@cloudflare/workers-types": "^4.20260702.1",
+    "@antfu/eslint-config": "^9.3.0",
+    "@cloudflare/workers-types": "^5.20260823.1",
     "@iconify-json/ph": "^1.2.2",
     "@soubiran/vite": "^0.7.0",
     "@types/dom-chromium-ai": "^0.0.17",
@@ -44,8 +44,8 @@
     "@vue/tsconfig": "^0.9.1",
     "eslint": "^10.3.0",
     "tailwindcss": "^4.3.0",
-    "taze": "^19.11.0",
-    "typescript": "~6.0.3",
+    "taze": "^21.1.0",
+    "typescript": "~7.0.2",
     "unplugin-icons": "^23.0.1",
     "vite": "^8.0.10",
     "vitest": "^4.1.10",
