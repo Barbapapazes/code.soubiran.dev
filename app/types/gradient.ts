@@ -1,7 +1,7 @@
 import type { CodeImageGradient } from '#shared/code-image'
 
-export { codeImageGradientValues as gradientValues } from '@/shared/code-image'
-export type { CodeImageGradient as Gradient } from '@/shared/code-image'
+export { codeImageGradientValues as gradientValues } from '#shared/code-image'
+export type { CodeImageGradient as Gradient } from '#shared/code-image'
 
 export const gradients: Record<CodeImageGradient, string> = {
   purple: 'bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500',

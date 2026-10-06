@@ -54,6 +54,7 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
+pnpm exec playwright install chromium
 node scripts/verify-build.mjs
 pnpm preview
 ```
@@ -63,9 +64,9 @@ Build on CI or a machine with sufficient memory. The build writes the SPA to
 `.output/code_soubiran_dev`. `pnpm preview` runs the built deployment in workerd;
 `nuxt preview` would only preview the static SPA, not the MCP endpoint.
 
-CI checks the actual Worker with Wrangler: it serves the SPA and its JavaScript
-assets, initializes MCP, discovers `generate_code_image`, and rejects untrusted
-origins. Unit tests mock image generation; the smoke test does not call the paid
+CI checks the actual Worker with Wrangler and Chromium: it serves the SPA and its
+JavaScript assets, loads a shared code card, updates URL state, downloads a PNG,
+initializes MCP, discovers `generate_code_image`, and rejects untrusted origins. Unit tests mock image generation; the smoke test does not call the paid
 Browser Run API or require production secrets. Browser-local AI and WebMCP still
 need a supporting browser for manual end-to-end validation.
 

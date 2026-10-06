@@ -4,8 +4,8 @@ import { spawn } from 'node:child_process'
 import { readFile, stat } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import process from 'node:process'
-import { chromium } from 'playwright'
 import { setTimeout as delay } from 'node:timers/promises'
+import { chromium } from 'playwright'
 
 const configPath = resolve('.output/code_soubiran_dev/wrangler.json')
 const config = JSON.parse(await readFile(configPath, 'utf8'))

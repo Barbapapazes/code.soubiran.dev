@@ -55,6 +55,12 @@ jobs:
       - name: Run lint
         run: pnpm run lint
 
+      - name: Run typecheck
+        run: pnpm run typecheck
+
+      - name: Run tests
+        run: pnpm run test
+
       - name: Run build
         run: pnpm run build
 
@@ -63,9 +69,3 @@ jobs:
 
       - name: Verify deployment artifact
         run: node scripts/verify-build.mjs
-
-      - name: Run typecheck
-        run: pnpm run typecheck
-
-      - name: Run tests
-        run: pnpm run test
