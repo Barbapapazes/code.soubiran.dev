@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Gradient } from '~/types/gradient'
-import { gradients } from '~/types/gradient'
 import { codeImageSelector } from '#shared/code-image'
+import { gradients } from '~/types/gradient'
 
 const editorWrapper = tv({
   slots: {

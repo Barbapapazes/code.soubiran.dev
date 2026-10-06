@@ -1,6 +1,6 @@
 import type { CodeImageInput } from './types'
-import { codeImageDefaults } from './types'
 import { base64Encode } from '../shared/base64'
+import { codeImageDefaults } from './types'
 
 const appUrl = 'https://code.soubiran.dev'
 

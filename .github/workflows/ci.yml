@@ -58,6 +58,9 @@ jobs:
       - name: Run build
         run: pnpm run build
 
+      - name: Install browser for editor smoke test
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Verify deployment artifact
         run: node scripts/verify-build.mjs
 

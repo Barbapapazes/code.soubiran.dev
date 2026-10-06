@@ -17,7 +17,7 @@ function environment(): WorkerEnvironment {
 
 const context = { waitUntil: vi.fn(), passThroughOnException: vi.fn() } as Parameters<typeof worker.fetch>[2]
 
-describe('Worker routing', () => {
+describe('worker routing', () => {
   it.each(['GET', 'POST', 'DELETE'])('routes MCP %s requests with bindings and execution context', async (method) => {
     const env = environment()
     const request = new Request('https://code.soubiran.dev/mcp?transport=http', { method })
@@ -31,7 +31,7 @@ describe('Worker routing', () => {
 
   it.each(['/', '/?code=aGVsbG8%3D', '/_nuxt/app.js', '/mcp/other'])('delegates %s to the assets binding', async (path) => {
     const env = environment()
-    const request = new Request('https://code.soubiran.dev' + path)
+    const request = new Request(`https://code.soubiran.dev${path}`)
     const response = await worker.fetch(request, env, context)
 
     expect(await response.text()).toBe('SPA')

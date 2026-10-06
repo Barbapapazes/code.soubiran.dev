@@ -31,7 +31,7 @@ export default defineNuxtConfig({
           href: 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap',
         },
       ],
-      script: [{ src: 'https://umami.soubiran.dev/script.js', defer: true, 'data-website-id': '09e30994-a21c-4c4f-b79a-7b42273fe98c' }],
+      script: [{ 'src': 'https://umami.soubiran.dev/script.js', 'defer': true, 'data-website-id': '09e30994-a21c-4c4f-b79a-7b42273fe98c' }],
     },
   },
   vite: {

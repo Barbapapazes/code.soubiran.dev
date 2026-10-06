@@ -2,14 +2,14 @@ import type { AuditableLogger } from 'evlog'
 import type { CodeImageEnvironment } from './types'
 import { McpServer } from '@modelcontextprotocol/server'
 import { z } from 'zod'
-import { generateCodeImage } from './code-image-screenshot'
-import { BrowserRunError } from './errors'
-import { codeImageDefaults } from './types'
 import {
   codeImageGradientValues,
   codeImageLanguageValues,
   codeImageSizeValues,
 } from '../shared/code-image'
+import { generateCodeImage } from './code-image-screenshot'
+import { BrowserRunError } from './errors'
+import { codeImageDefaults } from './types'
 
 type McpLogger = Pick<AuditableLogger, 'set' | 'setLevel'>
 

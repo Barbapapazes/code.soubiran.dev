@@ -1,5 +1,5 @@
-import { params } from '~/state/params'
 import { base64Decode, base64Encode } from '#shared/base64'
+import { params } from '~/state/params'
 
 const code = ref('')
 export function useCode() {

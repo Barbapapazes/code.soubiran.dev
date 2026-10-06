@@ -1,8 +1,8 @@
 import type { CodeImage, CodeImageEnvironment, CodeImageInput } from './types'
-import { createCodeImageUrl } from './code-image-url'
-import { BrowserRunError } from './errors'
 import { base64EncodeBytes } from '../shared/base64'
 import { codeImageSelector } from '../shared/code-image'
+import { createCodeImageUrl } from './code-image-url'
+import { BrowserRunError } from './errors'
 
 const browserRunUrl = 'https://api.cloudflare.com/client/v4/accounts'
 

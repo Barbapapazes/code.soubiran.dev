@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { SelectItem } from '@nuxt/ui'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import camera from '~icons/ph/camera'
 import moon from '~icons/ph/moon'
 import sparkle from '~icons/ph/sparkle'

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { createCodeImageUrl } from './code-image-url'
 import { base64Decode } from '../shared/base64'
+import { createCodeImageUrl } from './code-image-url'
 
 describe('createCodeImageUrl', () => {
   it('omits default values from the canonical app URL', () => {

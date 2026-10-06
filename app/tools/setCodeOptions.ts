@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
-import type { Gradient } from '~/types/gradient'
 import type { CodeImageLanguage, CodeImageSize } from '#shared/code-image'
+import type { Gradient } from '~/types/gradient'
 import { nextTick } from 'vue'
 import { z } from 'zod'
 import {

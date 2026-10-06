@@ -1,8 +1,8 @@
-import type { Gradient } from '~/types/gradient'
 import type {
   CodeImageLanguage,
   CodeImageSize,
 } from '#shared/code-image'
+import type { Gradient } from '~/types/gradient'
 
 export interface SearchParams {
   /**

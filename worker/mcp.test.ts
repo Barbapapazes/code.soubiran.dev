@@ -41,7 +41,9 @@ describe('code image MCP tool', () => {
 
   it('returns a safe MCP error when Browser Run fails', async () => {
     const log = logger()
-    const generateImage = vi.fn(async () => { throw new BrowserRunError(503, 'private upstream details') })
+    const generateImage = vi.fn(async () => {
+      throw new BrowserRunError(503, 'private upstream details')
+    })
 
     const result = await executeGenerateCodeImageTool(env, {}, log, generateImage)
 
