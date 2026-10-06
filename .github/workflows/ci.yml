@@ -8,8 +8,15 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  lint:
+  validate:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,31 +33,10 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      - name: Upload resolved lockfile
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: resolved-lockfile
-          path: pnpm-lock.yaml
+        run: pnpm install --frozen-lockfile
 
       - name: Prepare Nuxt types
         run: pnpm run prepare
-
-      - name: Format migration
-        run: pnpm run lint:fix
-
-      - name: Capture formatting patch
-        if: always()
-        run: git diff -- . ':!pnpm-lock.yaml' > formatting.patch
-
-      - name: Upload formatting patch
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: formatting-patch
-          path: formatting.patch
 
       - name: Run lint
         run: pnpm run lint
@@ -64,15 +50,15 @@ jobs:
       - name: Run build
         run: pnpm run build
 
+      - name: Install browser for editor smoke test
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Verify deployment artifact
+        run: node scripts/verify-build.mjs
+
       - name: Upload Cloudflare build
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: cloudflare-build
           path: .output
           include-hidden-files: true
-
-      - name: Install browser for editor smoke test
-        run: pnpm exec playwright install --with-deps chromium
-
-      - name: Verify deployment artifact
-        run: node scripts/verify-build.mjs

@@ -62,7 +62,9 @@ pnpm preview
 Build on CI or a machine with sufficient memory. The build writes the SPA to
 `.output/public` and the Worker plus deployment configuration to
 `.output/code_soubiran_dev`. `pnpm preview` runs the built deployment in workerd;
-`nuxt preview` would only preview the static SPA, not the MCP endpoint.
+`nuxt preview` would only preview the static SPA, not the MCP endpoint. Successful
+CI runs publish a `cloudflare-build` artifact; extract its contents into `.output/`
+to preview or deploy without rebuilding.
 
 CI checks the actual Worker with Wrangler and Chromium: it serves the SPA and its
 JavaScript assets, loads a shared code card, updates URL state, downloads a PNG,

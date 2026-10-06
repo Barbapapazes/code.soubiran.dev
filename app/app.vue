@@ -138,6 +138,7 @@ const ui = computed(() => app())
             <UFieldGroup>
               <UButton
                 :icon="isDark ? moon : sun"
+                aria-label="Toggle color mode"
                 color="neutral"
                 variant="subtle"
                 @click="() => { toggleDark() }"
