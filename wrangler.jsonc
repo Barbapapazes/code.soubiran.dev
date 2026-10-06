@@ -3,7 +3,7 @@
   "name": "code-soubiran-dev",
   "compatibility_date": "2026-04-15",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "./src/server/index.ts",
+  "main": "./worker/index.ts",
   "routes": [
     {
       "pattern": "code.soubiran.dev",
@@ -14,6 +14,8 @@
   "workers_dev": false,
   "preview_urls": false,
   "assets": {
+    "binding": "ASSETS",
+    "directory": ".nuxt/dist/client",
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/mcp"]
   },
