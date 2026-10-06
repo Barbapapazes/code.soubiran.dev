@@ -1,6 +1,49 @@
+import type { Connect, Plugin, ViteDevServer } from 'vite'
 import { fileURLToPath } from 'node:url'
 import { cloudflare } from '@cloudflare/vite-plugin'
 import icons from 'unplugin-icons/vite'
+
+// Cloudflare's catch-all dev middleware otherwise intercepts Nuxt's in-memory
+// SPA document. Scope only the middleware it registers, not Vite's asset/HMR stack.
+function cloudflareMcpPlugins(): Plugin[] {
+  function scopeMiddleware(server: ViteDevServer, existing: Set<ViteDevServer['middlewares']['stack'][number]>) {
+    for (const layer of server.middlewares.stack) {
+      if (existing.has(layer))
+        continue
+
+      const handle = layer.handle as Connect.NextHandleFunction
+      const scoped: Connect.NextHandleFunction = (req, res, next) => {
+        if (new URL(req.url || '/', 'http://localhost').pathname === '/mcp')
+          return handle(req, res, next)
+
+        next()
+      }
+      layer.handle = scoped
+    }
+  }
+
+  return cloudflare({ configPath: fileURLToPath(new URL('./wrangler.jsonc', import.meta.url)) }).map((plugin) => {
+    const hook = plugin.configureServer
+    if (!hook)
+      return plugin
+
+    const handler = typeof hook === 'function' ? hook : hook.handler
+    const configureServer: NonNullable<Plugin['configureServer']> = async function (server) {
+      const existing = new Set(server.middlewares.stack)
+      const post = await handler.call(this, server)
+      scopeMiddleware(server, existing)
+      if (post) {
+        return () => {
+          const existing = new Set(server.middlewares.stack)
+          post.call(this)
+          scopeMiddleware(server, existing)
+        }
+      }
+    }
+
+    return { ...plugin, configureServer: typeof hook === 'function' ? configureServer : { ...hook, handler: configureServer } }
+  })
+}
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-04-15',
@@ -36,7 +79,7 @@ export default defineNuxtConfig({
   },
   vite: {
     plugins: [
-      cloudflare({ configPath: fileURLToPath(new URL('./wrangler.jsonc', import.meta.url)) }),
+      ...cloudflareMcpPlugins(),
       icons({ compiler: 'vue3' }),
     ],
   },

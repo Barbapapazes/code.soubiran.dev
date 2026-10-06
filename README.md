@@ -38,8 +38,9 @@ pnpm dev
   a Cloudflare Worker, **not** Nuxt's `server/` directory.
 
 The UI remains client-rendered because its editor state and AI model belong to
-the browser. Cloudflare serves the generated SPA assets and sends `/mcp` requests
-to the Worker first. The Worker also delegates non-MCP requests to its `ASSETS`
+the browser. During `pnpm dev`, Cloudflare's middleware handles only `/mcp`; Nuxt serves
+the editor, assets, and HMR. In production, Cloudflare serves the generated SPA
+assets and sends `/mcp` requests to the Worker first. The Worker also delegates non-MCP requests to its `ASSETS`
 binding.
 
 For local MCP image generation, copy `.env.example` to `.dev.vars` and supply
