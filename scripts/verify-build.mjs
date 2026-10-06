@@ -40,7 +40,9 @@ async function rpc(message) {
   sessionId = response.headers.get('mcp-session-id') ?? sessionId
   const body = await response.text()
   if (response.headers.get('content-type')?.includes('text/event-stream')) {
-    return JSON.parse(body.split('\n').find(line => line.startsWith('data: ')).slice(6))
+    const data = body.split('\n').find(line => line.startsWith('data:'))
+    assert.ok(data, 'Expected an MCP event-stream response')
+    return JSON.parse(data.slice(5).trim())
   }
   return JSON.parse(body)
 }
@@ -109,6 +111,9 @@ try {
 
     await card.locator('textarea').fill('const updated = 123')
     await page.waitForFunction(() => new URL(location.href).searchParams.get('code') === btoa('const updated = 123'))
+    const wasDark = await page.locator('html').evaluate(element => element.classList.contains('dark'))
+    await page.locator('main button').first().click()
+    await page.waitForFunction(previous => document.documentElement.classList.contains('dark') !== previous, wasDark)
     const downloadPromise = page.waitForEvent('download')
     await page.getByRole('button', { name: 'Capture', exact: true }).click()
     const download = await downloadPromise

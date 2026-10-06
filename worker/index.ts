@@ -6,9 +6,9 @@ export interface WorkerEnvironment extends CodeImageEnvironment {
 }
 
 export default {
-  fetch(request: Request, env: WorkerEnvironment, ctx: Parameters<typeof handleMcpRequest>[2]) {
+  fetch(request: Request, env: WorkerEnvironment, ctx: Parameters<typeof handleMcpRequest.fetch>[2]) {
     if (new URL(request.url).pathname === '/mcp') {
-      return handleMcpRequest(request, env, ctx)
+      return handleMcpRequest.fetch(request, env, ctx)
     }
 
     return env.ASSETS.fetch(request)

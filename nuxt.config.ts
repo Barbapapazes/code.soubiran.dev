@@ -13,7 +13,7 @@ export default defineNuxtConfig({
   ui: { fonts: false, colorMode: false },
   // There is no Nuxt server runtime: resolve dynamic icons with Iconify,
   // and bundle the editor's explicit icons with unplugin-icons below.
-  icon: { provider: 'iconify' },
+  icon: { provider: 'iconify', serverBundle: false },
   imports: {
     imports: [{ from: 'tailwind-variants', name: 'tv' }],
   },

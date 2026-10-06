@@ -4,7 +4,7 @@ import worker from './index'
 import { handleMcpRequest } from './mcp-handler'
 
 vi.mock('./mcp-handler', () => ({
-  handleMcpRequest: vi.fn(async () => new Response('MCP')),
+  handleMcpRequest: { fetch: vi.fn(async () => new Response('MCP')) },
 }))
 
 function environment(): WorkerEnvironment {
@@ -25,7 +25,7 @@ describe('worker routing', () => {
     const response = await worker.fetch(request, env, context)
 
     expect(await response.text()).toBe('MCP')
-    expect(handleMcpRequest).toHaveBeenLastCalledWith(request, env, context)
+    expect(handleMcpRequest.fetch).toHaveBeenLastCalledWith(request, env, context)
     expect(env.ASSETS.fetch).not.toHaveBeenCalled()
   })
 

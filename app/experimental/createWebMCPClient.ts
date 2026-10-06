@@ -106,7 +106,8 @@ export function createWebMCPClient(options: CreateWebMCPClientOptions = {}): Web
   async function callTool({ name, arguments: input = {}, options: callOptions }: WebMcpCallToolArgs) {
     const matches = (await listTools()).filter(tool => tool.name === name)
 
-    if (matches.length === 0) {
+    const match = matches[0]
+    if (!match) {
       throw new Error(`WebMCP tool "${name}" was not found.`)
     }
 
@@ -114,7 +115,7 @@ export function createWebMCPClient(options: CreateWebMCPClientOptions = {}): Web
       throw new Error(`WebMCP tool "${name}" is ambiguous across documents.`)
     }
 
-    return executeTool(matches[0], input, callOptions)
+    return executeTool(match, input, callOptions)
   }
 
   function toolsFromDefinitions(definitions: readonly WebMCP.RegisteredTool[]): ToolSet {
