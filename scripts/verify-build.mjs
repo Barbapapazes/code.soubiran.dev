@@ -67,9 +67,9 @@ try {
   assert.equal(page.status, 200)
   const document = await page.text()
   assert.match(document, /Generate downloadable code snippets/)
-  const asset = document.match(/(?:src|href)="(\/_nuxt\/[^"?]+\.js)/)?.[1]
+  const asset = document.match(/(?:src|href)="([^"?]*_nuxt\/[^"?]+\.js)/)?.[1]
   assert.ok(asset, 'SPA document should reference a built JavaScript asset')
-  assert.equal((await fetch(origin + asset)).status, 200)
+  assert.equal((await fetch(new URL(asset, origin + '/'))).status, 200)
 
   const initialized = await rpc({
     jsonrpc: '2.0',
