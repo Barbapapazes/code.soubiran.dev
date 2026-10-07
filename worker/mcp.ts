@@ -1,6 +1,7 @@
 import type { AuditableLogger } from 'evlog'
 import type { CodeImageEnvironment } from './types'
 import { McpServer } from '@modelcontextprotocol/server'
+import { wrapMcpServerWithSentry } from '@sentry/cloudflare'
 import { z } from 'zod'
 import {
   codeImageGradientValues,
@@ -9,6 +10,7 @@ import {
 } from '../shared/code-image'
 import { generateCodeImage } from './code-image-screenshot'
 import { BrowserRunError } from './errors'
+import { reportWorkerError } from './observability'
 import { codeImageDefaults } from './types'
 
 type McpLogger = Pick<AuditableLogger, 'set' | 'setLevel'>
@@ -80,6 +82,7 @@ export async function executeGenerateCodeImageTool(
     }
   }
   catch (error) {
+    reportWorkerError(error, codeImageToolName)
     logger?.setLevel('error')
     logger?.set({
       mcp: {
@@ -108,10 +111,10 @@ export function createCodeImageMcpServer(
   env: CodeImageEnvironment,
   logger?: McpLogger,
 ): McpServer {
-  const server = new McpServer({
+  const server = wrapMcpServerWithSentry(new McpServer({
     name: 'code.soubiran.dev',
     version: '1.0.0',
-  })
+  }), { recordInputs: false, recordOutputs: false })
 
   server.registerTool(
     codeImageToolName,

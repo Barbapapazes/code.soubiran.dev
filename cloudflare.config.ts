@@ -1,4 +1,10 @@
+import { execFileSync } from 'node:child_process'
 import { bindings, defineConfig } from 'cf/config'
+
+const release = execFileSync('git', ['rev-parse', '--short', 'HEAD'], {
+  cwd: new URL('.', import.meta.url),
+  encoding: 'utf8',
+}).trim()
 
 export default defineConfig({
   worker: {
@@ -25,6 +31,9 @@ export default defineConfig({
       ASSETS: bindings.assets(),
       BROWSER_RUN_ACCOUNT_ID: bindings.secret(),
       BROWSER_RUN_API_TOKEN: bindings.secret(),
+      SENTRY_DSN: bindings.secret(),
+      SENTRY_ENVIRONMENT: bindings.text('production'),
+      SENTRY_RELEASE: bindings.text(release),
     },
   },
 })

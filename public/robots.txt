@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /mcp
+Content-Usage: bots=y, train-ai=n, ai-output=y, search=y
+Content-Signal: search=yes, ai-input=yes, ai-train=no

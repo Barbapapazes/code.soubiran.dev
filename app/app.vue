@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { SelectItem } from '@nuxt/ui'
+import type { CodeImageSize } from '#shared/code-image'
 import { onMounted } from 'vue'
 import Watermark from '~/components/Watermark.vue'
 import { useWebMCP } from '~/composables/useWebMCP'
@@ -33,12 +33,15 @@ const props = defineProps<AppProps>()
 defineEmits<AppEmits>()
 defineSlots<AppSlots>()
 
+const { track } = useAnalytics()
 const { availability, checkAvailability, initialize, downloadProgress } = useLLM()
 onMounted(async () => {
   await checkAvailability()
 })
 async function initializeAssistant() {
+  track('assistant_initialize_start', {})
   await initialize()
+  track(availability.value === 'available' ? 'assistant_initialize_success' : 'assistant_initialize_failure', {})
 }
 
 const isOpen = ref<boolean>(false)
@@ -48,6 +51,10 @@ function open() {
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
+function toggleColorMode() {
+  toggleDark()
+  track('editor_color_mode_change', { mode: isDark.value ? 'dark' : 'light' })
+}
 
 const editor = ref<{ el?: HTMLElement }>()
 const { capture: captureScreenshot } = useScreenshot(() => editor.value?.el)
@@ -74,7 +81,7 @@ useWebMCP(setCodeTool)
 useWebMCP(setCodeImageOptionsTool)
 useWebMCP(captureCodeImageTool)
 
-const sizes: SelectItem[] = [
+const sizes = [
   {
     label: 'Small',
     value: 'sm',
@@ -91,7 +98,7 @@ const sizes: SelectItem[] = [
     label: 'Extra Large',
     value: 'xl',
   },
-]
+] satisfies { label: string, value: CodeImageSize }[]
 
 const maxWidthClass = computed(() => {
   switch (size.value) {
@@ -129,6 +136,7 @@ const ui = computed(() => app())
           <GradientSelector
             v-model="gradient"
             :class="ui.gradientSelector({ class: props.ui?.gradientSelector })"
+            @update:model-value="track('editor_gradient_change', { gradient: $event })"
           />
 
           <div :class="ui.toolbar({ class: props.ui?.toolbar })">
@@ -138,23 +146,27 @@ const ui = computed(() => app())
                 aria-label="Toggle color mode"
                 color="neutral"
                 variant="subtle"
-                @click="() => { toggleDark() }"
+                @click="toggleColorMode"
               />
 
               <USelect
                 v-model="size"
                 :items="sizes"
+                aria-label="Image size"
                 color="neutral"
                 variant="subtle"
                 :class="ui.sizeSelect({ class: props.ui?.sizeSelect })"
+                @update:model-value="track('editor_size_change', { size: $event })"
               />
 
               <USelect
                 v-model="language"
                 :items="languages"
+                aria-label="Code language"
                 color="neutral"
                 variant="subtle"
                 :class="ui.languageSelect({ class: props.ui?.languageSelect })"
+                @update:model-value="track('editor_language_change', { language: $event })"
               />
             </UFieldGroup>
 

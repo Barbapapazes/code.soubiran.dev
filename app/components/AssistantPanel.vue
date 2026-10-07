@@ -33,6 +33,7 @@ const props = defineProps<AssistantPanelProps>()
 defineEmits<AssistantPanelEmits>()
 defineSlots<AssistantPanelSlots>()
 
+const { track } = useAnalytics()
 const { getModel } = useLLM()
 
 const transport = shallowRef<DirectChatTransport | null>()
@@ -43,7 +44,14 @@ const {
   sendMessage,
   status,
   stop,
-} = useChat(() => ({ transport: transport.value! }))
+} = useChat(() => ({
+  transport: transport.value!,
+  onError: () => track('assistant_message_failure', {}),
+  onFinish: ({ isAbort, isError, isDisconnect }) => {
+    if (!isAbort && !isError && !isDisconnect)
+      track('assistant_message_success', {})
+  },
+}))
 
 onMounted(() => {
   const tools = createAssistantTools(props.tools)
@@ -70,17 +78,25 @@ async function submit() {
     return
   }
 
+  track('assistant_message_send', {})
   sendMessage({ text: input.value })
   input.value = ''
 }
 
+function stopResponse() {
+  track('assistant_message_stop', {})
+  stop()
+}
+
 function clear() {
+  track('assistant_clear', {})
   clearError()
   input.value = ''
   messages.value = []
 }
 
 watch([() => open.value], async ([isPanelOpen]) => {
+  track(isPanelOpen ? 'assistant_open' : 'assistant_close', {})
   if (!isPanelOpen) {
     return
   }
@@ -215,7 +231,7 @@ const ui = computed(() => assistantPanel())
               color="neutral"
               size="sm"
               :disabled="!transport || status !== 'ready' || !input.trim().length"
-              @click="status === 'streaming' ? stop() : submit()"
+              @click="status === 'streaming' ? stopResponse() : submit()"
             />
           </div>
         </template>

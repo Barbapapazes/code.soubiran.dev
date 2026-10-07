@@ -1,4 +1,5 @@
 import type { CodeImageGradient, CodeImageLanguage, CodeImageSize } from '../shared/code-image'
+import type { ObservabilityEnvironment } from './observability'
 
 export const codeImageDefaults = {
   code: '',
@@ -18,7 +19,7 @@ export interface CodeImageInput {
   watermark?: string
 }
 
-export interface CodeImageEnvironment {
+export interface CodeImageEnvironment extends ObservabilityEnvironment {
   BROWSER_RUN_ACCOUNT_ID: string
   BROWSER_RUN_API_TOKEN: string
 }

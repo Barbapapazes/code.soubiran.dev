@@ -25,6 +25,7 @@ const props = defineProps<EditorProps>()
 defineEmits<EditorEmits>()
 defineSlots<EditorSlots>()
 
+const { track } = useAnalytics()
 const editable = useTemplateRef('editable')
 const textarea = useTemplateRef('textarea')
 
@@ -35,12 +36,14 @@ const { title } = useCodeTitle()
 const isTitleEnabled = ref(false)
 const showTitle = computed(() => title.value || isTitleEnabled.value)
 function enableTitle() {
+  track('editor_title_enable', {})
   isTitleEnabled.value = true
   nextTick(() => {
     editable.value?.edit()
   })
 }
 function onTitleSubmit() {
+  track('editor_title_submit', { enabled: Boolean(title.value) })
   if (!title.value) {
     isTitleEnabled.value = false
   }

@@ -25,7 +25,12 @@ describe('worker routing', () => {
     const response = await worker.fetch(request, env, context)
 
     expect(await response.text()).toBe('MCP')
-    expect(handleMcpRequest.fetch).toHaveBeenLastCalledWith(request, env, context)
+    expect(handleMcpRequest.fetch).toHaveBeenLastCalledWith(request, env, expect.objectContaining({ waitUntil: expect.any(Function) }))
+    // Sentry binds/wraps ExecutionContext methods to keep telemetry alive.
+    const wrappedContext = vi.mocked(handleMcpRequest.fetch).mock.lastCall![2]
+    const task = Promise.resolve()
+    wrappedContext.waitUntil(task)
+    expect(context.waitUntil).toHaveBeenLastCalledWith(task)
     expect(env.ASSETS.fetch).not.toHaveBeenCalled()
   })
 
