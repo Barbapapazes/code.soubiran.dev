@@ -1,4 +1,4 @@
-Always make components accessible and follow accessibility best practices. Consider tracking and analytics when implementing new features. The app loads Umami in `nuxt.config.ts`; use the existing integration where appropriate, and do not send code snippets or other sensitive user content to analytics. Consider SEO for changes to the app metadata and user-facing content.
+Always make components accessible and follow accessibility best practices. Consider tracking and analytics when implementing new features. Consider SEO for changes to the app metadata and user-facing content.
 
 ---
 

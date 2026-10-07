@@ -6,32 +6,21 @@ export default defineNuxtConfig({
   pages: false,
   devtools: { enabled: false },
   server: { builder: 'vite' },
-  modules: ['@nuxt/ui', '@vueuse/nuxt', '@nuxt/scripts'],
+  modules: [
+    '@nuxt/ui',
+    '@vueuse/nuxt',
+    '@nuxt/scripts',
+    './app/modules/analytics',
+    './app/modules/editor',
+    './app/modules/assistant',
+    './app/modules/webmcp',
+  ],
   css: ['~/styles/main.css'],
   ui: { fonts: false, colorMode: false },
   // Bundle icons found in source locally; use Iconify for any dynamic fallback.
   icon: { provider: 'iconify', serverBundle: false, clientBundle: { scan: true } },
   imports: {
     imports: [{ from: 'tailwind-variants', name: 'tv' }],
-  },
-  scripts: {
-    registry: {
-      umamiAnalytics: {
-        hostUrl: 'https://umami.soubiran.dev',
-        websiteId: '09e30994-a21c-4c4f-b79a-7b42273fe98c',
-        autoTrack: false,
-        beforeSend: '__codeAnalyticsBeforeSend',
-        scriptInput: { src: 'https://umami.soubiran.dev/script.js' },
-        trigger: 'onNuxtReady',
-      },
-    },
-  },
-  $development: {
-    scripts: {
-      registry: {
-        umamiAnalytics: 'mock',
-      },
-    },
   },
   app: {
     head: {

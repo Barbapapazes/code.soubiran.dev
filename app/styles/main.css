@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-@import "./shiki.css";
 
 @theme {
   --font-sans: 'DM Sans', sans-serif;
