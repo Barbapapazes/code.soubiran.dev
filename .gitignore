@@ -8,5 +8,6 @@ node_modules
 worker-configuration.d.ts
 auto-imports.d.ts
 components.d.ts
+*.tsbuildinfo
 .env
 .dev.vars*

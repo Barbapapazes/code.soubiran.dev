@@ -1,1 +1,0 @@
-{"root":["./worker/code-image-screenshot.ts","./worker/code-image-url.test.ts","./worker/code-image-url.ts","./worker/errors.ts","./worker/index.test.ts","./worker/index.ts","./worker/mcp-handler.ts","./worker/mcp.test.ts","./worker/mcp.ts","./worker/types.ts","./shared/base64.ts","./shared/code-image.ts"],"version":"6.0.3"}
