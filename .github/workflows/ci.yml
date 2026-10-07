@@ -8,8 +8,15 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  lint:
+  validate:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,20 +29,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6
         with:
-          node-version: latest
+          node-version: 24.15.0
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare Nuxt types
+        run: pnpm run prepare
 
       - name: Run lint
         run: pnpm run lint
-
-      - name: Run build
-        run: pnpm run build # Must be run before typecheck because typecheck uses the generated types
 
       - name: Run typecheck
         run: pnpm run typecheck
 
       - name: Run tests
         run: pnpm run test
+
+      - name: Run build
+        run: pnpm run build

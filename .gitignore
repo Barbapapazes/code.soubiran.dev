@@ -1,9 +1,13 @@
 .wrangler
+.cloudflare
+.nuxt
+.output
 dist
 node_modules
 .DS_Store
 worker-configuration.d.ts
 auto-imports.d.ts
 components.d.ts
+*.tsbuildinfo
 .env
 .dev.vars*

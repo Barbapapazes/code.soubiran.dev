@@ -1,0 +1,30 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 7a1c8917919d2403851af34a0f11edf7187ae157..861924bbf9ce28497ee1e3f8defb17f44ecf0425 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1133,7 +1133,7 @@ function bundle(nuxt) {
+ 	if (nuxt.options.vite.root === nuxt.options.srcDir) nuxt.options.vite.root = nuxt.options.rootDir;
+ 	nuxt.options.vite.build ||= {};
+ 	nuxt.options.vite.build.outDir ||= outputDir;
+-	const publicDir = resolve(outputDir, "public");
++	let publicDir = resolve(outputDir, "public");
+ 	const ssr = nuxt.options.ssr !== false;
+ 	const prerender = isPrerendering(nuxt);
+ 	const handler = ssr && !nuxt.options.dev ? resolve(outputDir, "server/index.mjs") : void 0;
+@@ -1196,6 +1196,16 @@ function bundle(nuxt) {
+ 			client.build.rolldownOptions.input = { index: documentPath(nuxt) };
+ 		}
+ 		nuxt.options.vite.$client = client;
++		// Deployment plugins can redirect client output during Vite config resolution.
++		// Finalize the resolved SPA assets instead of a stale default output directory.
++		if (!ssr) nuxt.options.vite.plugins.push({
++			name: "nuxt:vite-server:client-output",
++			enforce: "post",
++			configResolved(config) {
++				const outDir = config.environments?.client?.build?.outDir;
++				if (outDir) publicDir = resolve(config.root, outDir);
++			}
++		});
+ 		addVitePlugin(() => [DocumentPlugin(nuxt), EntryImportMapPlugin()], { server: false });
+ 	}
+ 	if (nuxt.options.dev) {
