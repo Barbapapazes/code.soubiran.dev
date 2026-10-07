@@ -1,10 +1,6 @@
 <script lang="ts">
 import type { SelectItem } from '@nuxt/ui'
 import { onMounted } from 'vue'
-import camera from '~icons/ph/camera'
-import moon from '~icons/ph/moon'
-import sparkle from '~icons/ph/sparkle'
-import sun from '~icons/ph/sun'
 import Watermark from '~/components/Watermark.vue'
 import { useWebMCP } from '~/composables/useWebMCP'
 import { createCaptureCodeTool } from '~/tools/captureCode'
@@ -137,7 +133,7 @@ const ui = computed(() => app())
           <div :class="ui.toolbar({ class: props.ui?.toolbar })">
             <UFieldGroup>
               <UButton
-                :icon="isDark ? moon : sun"
+                :icon="isDark ? 'i-ph-moon' : 'i-ph-sun'"
                 aria-label="Toggle color mode"
                 color="neutral"
                 variant="subtle"
@@ -164,7 +160,7 @@ const ui = computed(() => app())
             <UFieldGroup>
               <UButton
                 v-if="availability === 'downloadable'"
-                :icon="sparkle"
+                icon="i-ph-sparkle"
                 label="Initialize Assistant"
                 color="neutral"
                 variant="subtle"
@@ -179,7 +175,7 @@ const ui = computed(() => app())
               />
               <UButton
                 v-else-if="availability !== 'unavailable' && availability !== 'checking'"
-                :icon="sparkle"
+                icon="i-ph-sparkle"
                 label="Assistant"
                 color="neutral"
                 variant="subtle"
@@ -187,7 +183,7 @@ const ui = computed(() => app())
               />
 
               <UButton
-                :icon="camera"
+                icon="i-ph-camera"
                 label="Capture"
                 color="neutral"
                 variant="solid"

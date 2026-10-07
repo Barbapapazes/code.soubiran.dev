@@ -9,14 +9,14 @@ function tool(overrides: Partial<WebMCP.RegisteredTool> = {}): WebMCP.Registered
     name: 'set_code',
     title: 'Set code',
     description: 'Update the editor code.',
-    inputSchema: JSON.stringify({ type: 'object', properties: { code: { type: 'string' } } }),
+    inputSchema: { type: 'object', properties: { code: { type: 'string' } } },
     origin,
     window: {} as Window,
     ...overrides,
   }
 }
 
-function createDocument(modelContext?: Partial<WebMCP.ModelContext> & { executeTool?: (...args: any[]) => Promise<unknown> }): WebMcpDocument {
+function createDocument(modelContext?: Partial<WebMCP.ModelContext>): WebMcpDocument {
   return {
     defaultView: { location: { origin } } as Window,
     modelContext: modelContext as WebMCP.ModelContext,
@@ -40,12 +40,12 @@ describe('createWebMCPClient', () => {
         getTools: async () => [
           tool(),
           tool({ name: 'external', origin: 'https://example.com' }),
-          tool({ name: 'invalid', inputSchema: '{' }),
+          tool({ name: 'invalid', inputSchema: [] }),
         ],
       }),
     })
 
-    await expect(client.listTools()).resolves.toEqual([tool(), tool({ name: 'invalid', inputSchema: '{' })])
+    await expect(client.listTools()).resolves.toEqual([tool()])
 
     const tools = await client.tools()
     expect(Object.keys(tools)).toEqual(['set_code'])
@@ -61,9 +61,35 @@ describe('createWebMCPClient', () => {
       .toBe('Updated the editor.')
     expect(executeTool).toHaveBeenCalledWith(
       tool(),
-      JSON.stringify({ code: 'const answer = 42' }),
+      { code: 'const answer = 42' },
       { signal: controller.signal },
     )
+  })
+
+  it('supports tools without an input schema or arguments', async () => {
+    const descriptor = tool({ inputSchema: undefined })
+    const executeTool = vi.fn(async () => 'Done.')
+    const client = createWebMCPClient({
+      document: createDocument({ executeTool, getTools: async () => [descriptor] }),
+    })
+
+    await expect(client.listTools()).resolves.toEqual([descriptor])
+    const tools = await client.tools()
+    expect(tools.set_code?.inputSchema).toMatchObject({ jsonSchema: {} })
+    await expect(client.callTool({ name: 'set_code' })).resolves.toBe('Done.')
+    expect(executeTool).toHaveBeenCalledWith(descriptor, {}, { signal: undefined })
+  })
+
+  it('skips malformed schemas when adapting tool definitions directly', () => {
+    const client = createWebMCPClient({ document: {} })
+    const tools = client.toolsFromDefinitions([
+      tool(),
+      tool({ name: 'invalid', inputSchema: [] }),
+      tool({ name: 'null_schema', inputSchema: null as unknown as object }),
+      tool({ name: 'string_schema', inputSchema: '{}' as unknown as object }),
+    ])
+
+    expect(Object.keys(tools)).toEqual(['set_code'])
   })
 
   it('accepts explicitly allowlisted cross-origin tools', async () => {
@@ -79,13 +105,13 @@ describe('createWebMCPClient', () => {
   })
 
   it('rejects ambiguous calls and forwards named calls to the browser', async () => {
-    const executeTool = vi.fn(async () => ({ ok: true }))
+    const executeTool = vi.fn(async () => 'Updated the editor.')
     const namedClient = await createWebMCPClient({
       document: createDocument({ executeTool, getTools: async () => [tool()] }),
     })
 
-    await expect(namedClient.callTool({ name: 'set_code', arguments: { code: 'x' } })).resolves.toEqual({ ok: true })
-    expect(executeTool).toHaveBeenCalledWith(tool(), JSON.stringify({ code: 'x' }), { signal: undefined })
+    await expect(namedClient.callTool({ name: 'set_code', arguments: { code: 'x' } })).resolves.toBe('Updated the editor.')
+    expect(executeTool).toHaveBeenCalledWith(tool(), { code: 'x' }, { signal: undefined })
 
     const ambiguousClient = await createWebMCPClient({
       document: createDocument({ executeTool, getTools: async () => [tool(), tool({ origin: 'https://example.com' })] }),

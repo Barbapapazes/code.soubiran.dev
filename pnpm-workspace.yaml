@@ -1,11 +1,7 @@
+# The pinned Nuxt preview packages depend on other pkg.pr.new tarballs.
+blockExoticSubdeps: false
+trustPolicy: off
 shellEmulator: true
-
-trustPolicy: no-downgrade
-
-# Babel still requires this legacy release (published 2023-07-10).
-# Its integrity is pinned in the lockfile; it predates current provenance.
-trustPolicyExclude:
-  - semver@6.3.1
 
 allowBuilds:
   core-js-pure: false

@@ -4,20 +4,9 @@ import {
   jsonSchema,
 } from 'ai'
 
-/** Chrome's experimental in-page agent extension; it is not part of WebMCP yet. */
-export interface ExperimentalWebMcpToolExecutor {
-  executeTool: (
-    tool: WebMCP.RegisteredTool,
-    input: string,
-    options?: { signal?: AbortSignal },
-  ) => Promise<unknown>
-}
-
-type WebMcpModelContext = WebMCP.ModelContext & Partial<ExperimentalWebMcpToolExecutor>
-
 export interface WebMcpDocument {
   defaultView?: Pick<Window, 'location'> | null
-  modelContext?: WebMcpModelContext
+  modelContext?: WebMCP.ModelContext
 }
 
 export interface CreateWebMCPClientOptions {
@@ -55,11 +44,11 @@ function isToolDescriptor(value: unknown): value is WebMCP.RegisteredTool {
   return typeof tool.name === 'string'
     && typeof tool.description === 'string'
     && typeof tool.origin === 'string'
-    && (tool.inputSchema === undefined || typeof tool.inputSchema === 'string')
+    && (tool.inputSchema === undefined || (tool.inputSchema !== null && typeof tool.inputSchema === 'object' && !Array.isArray(tool.inputSchema)))
 }
 
-function parseInputSchema(inputSchema: string | undefined) {
-  const schema = inputSchema === undefined ? {} : JSON.parse(inputSchema)
+function getInputSchema(inputSchema: object | undefined) {
+  const schema = inputSchema === undefined ? {} : inputSchema
 
   if (!schema || typeof schema !== 'object' || Array.isArray(schema)) {
     throw new TypeError('WebMCP tool input schemas must be JSON objects.')
@@ -100,7 +89,7 @@ export function createWebMCPClient(options: CreateWebMCPClientOptions = {}): Web
       throw new Error('WebMCP tools are unavailable in this browser.')
     }
 
-    return modelContext.executeTool(tool, JSON.stringify(input), { signal: callOptions.signal })
+    return modelContext.executeTool(tool, input, { signal: callOptions.signal })
   }
 
   async function callTool({ name, arguments: input = {}, options: callOptions }: WebMcpCallToolArgs) {
@@ -136,7 +125,7 @@ export function createWebMCPClient(options: CreateWebMCPClientOptions = {}): Web
       try {
         toolSet[descriptor.name] = dynamicTool({
           description: descriptor.description,
-          inputSchema: jsonSchema(parseInputSchema(descriptor.inputSchema)),
+          inputSchema: jsonSchema(getInputSchema(descriptor.inputSchema)),
           execute: (input, { abortSignal }) => executeTool(
             descriptor,
             input as Record<string, unknown>,

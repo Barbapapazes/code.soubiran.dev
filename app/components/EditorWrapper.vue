@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<EditorWrapperProps>(), {
 defineEmits<EditorWrapperEmits>()
 defineSlots<EditorWrapperSlots>()
 
-const el = templateRef('el')
+const el = useTemplateRef('el')
 defineExpose({
   el,
 })

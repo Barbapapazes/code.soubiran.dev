@@ -1,6 +1,5 @@
 <script lang="ts">
 import type { Gradient } from '~/types/gradient'
-import check from '~icons/ph/check'
 import { gradientNames, gradients, gradientValues } from '~/types/gradient'
 
 const gradientSelector = tv({
@@ -48,9 +47,9 @@ const ui = computed(() => gradientSelector())
         :aria-pressed="gradient === modelValue"
         @click="emit('update:modelValue', gradient)"
       >
-        <component
-          :is="check"
+        <UIcon
           v-if="gradient === modelValue"
+          name="i-ph-check"
           :class="ui.icon({ class: props.ui?.icon })"
           aria-hidden="true"
         />

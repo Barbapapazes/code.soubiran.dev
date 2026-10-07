@@ -2,9 +2,6 @@
 import { useChat } from '@ai-sdk/vue'
 import { isPartStreaming, isToolStreaming } from '@nuxt/ui/utils/ai'
 import { DirectChatTransport, getToolName, isDynamicToolUIPart, isReasoningUIPart, isStepCount, isTextUIPart, ToolLoopAgent } from 'ai'
-import arrowClockwiseIcon from '~icons/ph/arrow-clockwise'
-import paperPlaneTiltIcon from '~icons/ph/paper-plane-tilt'
-import stopIcon from '~icons/ph/stop'
 import AssistantMarkdown from '~/components/AssistantMarkdown'
 import { createWebMCPClient } from '~/experimental/createWebMCPClient'
 
@@ -213,7 +210,7 @@ const ui = computed(() => assistantPanel())
             </span>
 
             <UButton
-              :icon="status === 'ready' ? paperPlaneTiltIcon : status === 'error' ? arrowClockwiseIcon : stopIcon"
+              :icon="status === 'ready' ? 'i-ph-paper-plane-tilt' : status === 'error' ? 'i-ph-arrow-clockwise' : 'i-ph-stop'"
               :aria-label="status === 'streaming' ? 'Stop response' : 'Send message'"
               color="neutral"
               size="sm"
