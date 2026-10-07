@@ -72,7 +72,7 @@ export function createWebMCPClient(options: CreateWebMCPClientOptions = {}): Web
   }
 
   async function listTools() {
-    if (!modelContext?.executeTool) {
+    if (!isAvailable() || !modelContext) {
       return []
     }
 

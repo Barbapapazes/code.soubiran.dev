@@ -69,6 +69,7 @@ const setCodeImageOptionsTool = createSetCodeOptionsTool({
 })
 const captureCodeImageTool = createCaptureCodeTool(captureScreenshot)
 
+const assistantTools: WebMCP.ModelContextTool[] = [setCodeTool, setCodeImageOptionsTool, captureCodeImageTool]
 useWebMCP(setCodeTool)
 useWebMCP(setCodeImageOptionsTool)
 useWebMCP(captureCodeImageTool)
@@ -197,6 +198,7 @@ const ui = computed(() => app())
 
     <AssistantPanel
       v-model:open="isOpen"
+      :tools="assistantTools"
       class="shrink-0 w-(--sidebar-width) transition-[width] duration-200 ease-linear motion-reduce:transition-none data-[state=collapsed]:w-0"
     />
   </UApp>

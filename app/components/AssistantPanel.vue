@@ -3,7 +3,7 @@ import { useChat } from '@ai-sdk/vue'
 import { isPartStreaming, isToolStreaming } from '@nuxt/ui/utils/ai'
 import { DirectChatTransport, getToolName, isDynamicToolUIPart, isReasoningUIPart, isStepCount, isTextUIPart, ToolLoopAgent } from 'ai'
 import AssistantMarkdown from '~/components/AssistantMarkdown'
-import { createWebMCPClient } from '~/experimental/createWebMCPClient'
+import { createAssistantTools } from '~/experimental/createAssistantTools'
 
 const assistantPanel = tv({
   slots: {
@@ -19,6 +19,7 @@ const assistantPanel = tv({
 })
 
 interface AssistantPanelProps {
+  tools: readonly WebMCP.ModelContextTool[]
   open: boolean
   class?: any
   ui?: Partial<Omit<typeof assistantPanel.slots, 'root'>>
@@ -44,9 +45,8 @@ const {
   stop,
 } = useChat(() => ({ transport: transport.value! }))
 
-onMounted(async () => {
-  const client = createWebMCPClient()
-  const tools = await client.tools()
+onMounted(() => {
+  const tools = createAssistantTools(props.tools)
 
   const agent = new ToolLoopAgent({
     instructions: `You are the local assistant for code.soubiran.dev, a tool that turns raw source code into clean, beautifully styled images for sharing on social media, blogs, or presentations. Help users edit or capture the code.`,
@@ -66,7 +66,7 @@ async function submit() {
     return
   }
 
-  if (status.value !== 'ready') {
+  if (!transport.value || status.value !== 'ready') {
     return
   }
 
@@ -214,7 +214,7 @@ const ui = computed(() => assistantPanel())
               :aria-label="status === 'streaming' ? 'Stop response' : 'Send message'"
               color="neutral"
               size="sm"
-              :disabled="status !== 'ready' || !input.trim().length"
+              :disabled="!transport || status !== 'ready' || !input.trim().length"
               @click="status === 'streaming' ? stop() : submit()"
             />
           </div>

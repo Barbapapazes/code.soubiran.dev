@@ -72,13 +72,24 @@ function toErrorResponse(error: unknown): WebMCPToolResponse {
 export function useWebMCP<Args extends Record<string, unknown>, Result>(
   options: UseWebMCPOptions<Args, Result>,
 ): UseWebMCPReturn {
-  const modelContext = globalThis.document?.modelContext
+  // Chromium exposes registration on navigator; older prototypes used document.
+  const navigatorContext = (globalThis.navigator as (Navigator & {
+    modelContext?: {
+      registerTool: (tool: WebMCP.ModelContextTool) => void | Promise<void>
+      unregisterTool: (name: string) => void
+    }
+  }) | undefined)?.modelContext
+  const documentContext = globalThis.document?.modelContext
+  const modelContext = navigatorContext ?? documentContext
   const isSupported = computed(() => typeof modelContext?.registerTool === 'function')
   const isRegistered = shallowRef(false)
   const error = shallowRef<Error | null>(null)
   let controller: AbortController | undefined
+  let unregister: (() => void) | undefined
 
   function cleanup() {
+    unregister?.()
+    unregister = undefined
     controller?.abort()
     controller = undefined
     isRegistered.value = false
@@ -96,7 +107,7 @@ export function useWebMCP<Args extends Record<string, unknown>, Result>(
     controller = nextController
 
     try {
-      await modelContext.registerTool({
+      const tool: WebMCP.ModelContextTool = {
         name: toValue(options.name),
         description: toValue(options.description),
         inputSchema: toValue(options.inputSchema),
@@ -124,7 +135,19 @@ export function useWebMCP<Args extends Record<string, unknown>, Result>(
             return toErrorResponse(cause)
           }
         },
-      }, { signal: nextController.signal })
+      }
+
+      if (navigatorContext) {
+        await navigatorContext.registerTool(tool)
+        if (nextController.signal.aborted) {
+          navigatorContext.unregisterTool(tool.name)
+          return
+        }
+        unregister = () => navigatorContext.unregisterTool(tool.name)
+      }
+      else if (documentContext) {
+        await documentContext.registerTool(tool, { signal: nextController.signal })
+      }
 
       if (controller === nextController && !nextController.signal.aborted) {
         isRegistered.value = true
