@@ -164,6 +164,7 @@ settings:
 
 patchedDependencies:
   '@nuxt/vite-server@4.6.0': 2dc86d8a9d3ce51f71efb82190e1e951345952ae81f4cf7b7c327d8b88dae122
+  cf@1.0.0-beta.12: 6a5ef119369c020ac325b1c1b01692668679baacaaf5659800b4c7d28d766149
 
 importers:
 
@@ -256,7 +257,7 @@ importers:
         version: 15.0.0(3aa897fbbbbdaa9800887672e390ab08)
       cf:
         specifier: 1.0.0-beta.12
-        version: 1.0.0-beta.12(@types/node@26.6.4)
+        version: 1.0.0-beta.12(patch_hash=6a5ef119369c020ac325b1c1b01692668679baacaaf5659800b4c7d28d766149)(@types/node@26.6.4)
       eslint:
         specifier: ^10.12.0
         version: 10.12.0(jiti@2.7.0)(supports-color@10.2.2)
@@ -10563,7 +10564,7 @@ snapshots:
 
   ccount@2.0.1: {}
 
-  cf@1.0.0-beta.12(@types/node@26.6.4):
+  cf@1.0.0-beta.12(patch_hash=6a5ef119369c020ac325b1c1b01692668679baacaaf5659800b4c7d28d766149)(@types/node@26.6.4):
     dependencies:
       '@cloudflare/build-output-utils': 0.8.5
       '@cloudflare/codemods': 0.4.0

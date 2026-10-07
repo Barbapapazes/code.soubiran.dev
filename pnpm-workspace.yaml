@@ -7,6 +7,9 @@ shellEmulator: true
 # resolved client outDir, which Cloudflare redirects to its build output.
 patchedDependencies:
   '@nuxt/vite-server@4.6.0': patches/@nuxt__vite-server@4.6.0.patch
+  # Reconcile inferred custom-domain zones/default flags in cf's strict deploy
+  # comparison. Keep strict mode enabled for genuine remote configuration drift.
+  cf@1.0.0-beta.12: patches/cf@1.0.0-beta.12.patch
 
 allowBuilds:
   core-js-pure: false
