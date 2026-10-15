@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vite-plus/test'
 import { base64Decode } from '../shared/base64'
 import { createCodeImageUrl } from './code-image-url'
 

@@ -10,11 +10,13 @@ import Textarea from './Textarea.vue'
 const editor = tv({
   slots: {
     base: 'group relative border border-12 border-white/30 rounded-3xl overflow-hidden',
-    actions: 'opacity-0 group-hover:opacity-100 absolute top-0 left-1/2 -translate-x-1/2 z-10 transition-opacity duration-100 ease-in',
+    actions:
+      'opacity-0 group-hover:opacity-100 absolute top-0 left-1/2 -translate-x-1/2 z-10 transition-opacity duration-100 ease-in',
     title: 'text-center py-3 px-5 text-sm font-medium font-sofia text-muted bg-elevated border-b border-accented h-11',
     wrapper: 'relative p-5 bg-elevated overflow-hidden flex',
     render: 'absolute inset-5',
-    textarea: 'relative font-mono text-transparent caret-(--ui-text-muted) focus:outline-none resize-none w-full h-full',
+    textarea:
+      'relative font-mono text-transparent caret-(--ui-text-muted) focus:outline-none resize-none w-full h-full',
   },
 })
 
@@ -65,17 +67,8 @@ const ui = computed(() => editor())
 
 <template>
   <div :class="ui.base({ class: [props.ui?.base, props.class] })">
-    <div
-      v-if="!showTitle"
-      :class="ui.actions({ class: props.ui?.actions })"
-    >
-      <UButton
-        color="neutral"
-        variant="link"
-        size="xs"
-        label="Title"
-        @click="enableTitle"
-      />
+    <div v-if="!showTitle" :class="ui.actions({ class: props.ui?.actions })">
+      <UButton color="neutral" variant="link" size="xs" label="Title" @click="enableTitle" />
     </div>
 
     <EditableRoot
@@ -84,7 +77,8 @@ const ui = computed(() => editor())
       v-model="title"
       placeholder=""
       auto-resize
-      :class="ui.title({ class: props.ui?.title })" @submit="onTitleSubmit"
+      :class="ui.title({ class: props.ui?.title })"
+      @submit="onTitleSubmit"
     >
       <EditableArea>
         <EditablePreview as="div" class="min-h-4 min-w-10" />
@@ -93,11 +87,7 @@ const ui = computed(() => editor())
     </EditableRoot>
     <div :class="ui.wrapper({ class: props.ui?.wrapper })">
       <Suspense>
-        <Render
-          :code="code"
-          :language="language"
-          :class="ui.render({ class: props.ui?.render })"
-        />
+        <Render :code="code" :language="language" :class="ui.render({ class: props.ui?.render })" />
       </Suspense>
 
       <Textarea

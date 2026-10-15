@@ -52,7 +52,7 @@ const sizes = [
   { label: 'Medium', value: 'md' },
   { label: 'Large', value: 'lg' },
   { label: 'Extra Large', value: 'xl' },
-] satisfies { label: string, value: CodeImageSize }[]
+] satisfies { label: string; value: CodeImageSize }[]
 
 const maxWidthClass = computed(() => {
   switch (size.value) {
@@ -75,11 +75,7 @@ const ui = computed(() => editorWorkspace())
 <template>
   <main :class="ui.root({ class: [props.ui?.root, props.class] })">
     <div :class="ui.layout({ class: [props.ui?.layout, maxWidthClass] })">
-      <EditorWrapper
-        ref="wrapper"
-        :gradient="gradient"
-        :class="ui.canvas({ class: props.ui?.canvas })"
-      >
+      <EditorWrapper ref="wrapper" :gradient="gradient" :class="ui.canvas({ class: props.ui?.canvas })">
         <Editor class="shadow-lg" />
 
         <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
@@ -126,13 +122,7 @@ const ui = computed(() => editorWorkspace())
           <UFieldGroup>
             <slot name="actions" />
 
-            <UButton
-              icon="i-ph-camera"
-              label="Capture"
-              color="neutral"
-              variant="solid"
-              @click="capture"
-            />
+            <UButton icon="i-ph-camera" label="Capture" color="neutral" variant="solid" @click="capture" />
           </UFieldGroup>
         </div>
       </div>

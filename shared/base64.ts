@@ -22,7 +22,7 @@ export function base64EncodeBytes(bytes: Uint8Array): string {
 
 export function base64Decode(value: string = ''): string {
   const binary = atob(value)
-  const bytes = Uint8Array.from(binary, character => character.codePointAt(0) ?? 0)
+  const bytes = Uint8Array.from(binary, (character) => character.codePointAt(0) ?? 0)
 
   return textDecoder.decode(bytes)
 }

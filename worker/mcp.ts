@@ -3,11 +3,7 @@ import type { CodeImageEnvironment } from './types'
 import { McpServer } from '@modelcontextprotocol/server'
 import { wrapMcpServerWithSentry } from '@sentry/cloudflare'
 import { z } from 'zod'
-import {
-  codeImageGradientValues,
-  codeImageLanguageValues,
-  codeImageSizeValues,
-} from '../shared/code-image'
+import { codeImageGradientValues, codeImageLanguageValues, codeImageSizeValues } from '../shared/code-image'
 import { generateCodeImage } from './code-image-screenshot'
 import { BrowserRunError } from './errors'
 import { reportWorkerError } from './observability'
@@ -80,8 +76,7 @@ export async function executeGenerateCodeImageTool(
         },
       ],
     }
-  }
-  catch (error) {
+  } catch (error) {
     reportWorkerError(error, codeImageToolName)
     logger?.setLevel('error')
     logger?.set({
@@ -107,14 +102,14 @@ export async function executeGenerateCodeImageTool(
   }
 }
 
-export function createCodeImageMcpServer(
-  env: CodeImageEnvironment,
-  logger?: McpLogger,
-): McpServer {
-  const server = wrapMcpServerWithSentry(new McpServer({
-    name: 'code.soubiran.dev',
-    version: '1.0.0',
-  }), { recordInputs: false, recordOutputs: false })
+export function createCodeImageMcpServer(env: CodeImageEnvironment, logger?: McpLogger): McpServer {
+  const server = wrapMcpServerWithSentry(
+    new McpServer({
+      name: 'code.soubiran.dev',
+      version: '1.0.0',
+    }),
+    { recordInputs: false, recordOutputs: false },
+  )
 
   server.registerTool(
     codeImageToolName,
@@ -122,14 +117,23 @@ export function createCodeImageMcpServer(
       description: 'Generate a PNG image of a syntax-highlighted code snippet using code.soubiran.dev.',
       inputSchema: z.object({
         code: z.string().optional().describe('The source code to render.'),
-        language: z.enum(codeImageLanguageValues).optional().describe(`The code language. Defaults to ${codeImageDefaults.language}.`),
-        size: z.enum(codeImageSizeValues).optional().describe(`The canvas size. Defaults to ${codeImageDefaults.size}.`),
-        gradient: z.enum(codeImageGradientValues).optional().describe(`The background gradient. Defaults to ${codeImageDefaults.gradient}.`),
+        language: z
+          .enum(codeImageLanguageValues)
+          .optional()
+          .describe(`The code language. Defaults to ${codeImageDefaults.language}.`),
+        size: z
+          .enum(codeImageSizeValues)
+          .optional()
+          .describe(`The canvas size. Defaults to ${codeImageDefaults.size}.`),
+        gradient: z
+          .enum(codeImageGradientValues)
+          .optional()
+          .describe(`The background gradient. Defaults to ${codeImageDefaults.gradient}.`),
         title: z.string().optional().describe('An optional title above the code.'),
         watermark: z.string().optional().describe('An optional watermark below the code.'),
       }),
     },
-    input => executeGenerateCodeImageTool(env, input, logger),
+    (input) => executeGenerateCodeImageTool(env, input, logger),
   )
 
   return server

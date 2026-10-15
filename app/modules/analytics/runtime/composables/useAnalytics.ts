@@ -31,7 +31,7 @@ export function useAnalytics() {
   ) {
     // Only predefined settings and actions: never code, prompts, tool data, or errors.
     if (import.meta.dev) {
-      // eslint-disable-next-line no-console -- Safe development-only analytics diagnostics.
+      // oxlint-disable-next-line no-console -- Safe development-only analytics diagnostics.
       console.debug('[analytics] event', event, properties)
     }
 
@@ -40,7 +40,7 @@ export function useAnalytics() {
 
   function trackPage() {
     if (import.meta.dev) {
-      // eslint-disable-next-line no-console -- Safe development-only analytics diagnostics.
+      // oxlint-disable-next-line no-console -- Safe development-only analytics diagnostics.
       console.debug('[analytics] pageview')
     }
 

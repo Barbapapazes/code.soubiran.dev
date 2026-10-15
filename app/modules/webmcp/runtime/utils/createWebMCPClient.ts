@@ -1,8 +1,5 @@
 import type { ToolSet } from 'ai'
-import {
-  dynamicTool,
-  jsonSchema,
-} from 'ai'
+import { dynamicTool, jsonSchema } from 'ai'
 
 export interface WebMcpDocument {
   defaultView?: Pick<Window, 'location'> | null
@@ -30,7 +27,11 @@ export interface WebMCPClient {
   readonly availability: WebMcpToolAvailability
   listTools: () => Promise<readonly WebMCP.RegisteredTool[]>
   callTool: (args: WebMcpCallToolArgs) => Promise<unknown>
-  executeTool: (tool: WebMCP.RegisteredTool, input: Record<string, unknown>, options?: WebMcpCallToolOptions) => Promise<unknown>
+  executeTool: (
+    tool: WebMCP.RegisteredTool,
+    input: Record<string, unknown>,
+    options?: WebMcpCallToolOptions,
+  ) => Promise<unknown>
   tools: () => Promise<ToolSet>
   toolsFromDefinitions: (definitions: readonly WebMCP.RegisteredTool[]) => ToolSet
 }
@@ -41,10 +42,13 @@ function isToolDescriptor(value: unknown): value is WebMCP.RegisteredTool {
   }
 
   const tool = value as Partial<WebMCP.RegisteredTool>
-  return typeof tool.name === 'string'
-    && typeof tool.description === 'string'
-    && typeof tool.origin === 'string'
-    && (tool.inputSchema === undefined || (tool.inputSchema !== null && typeof tool.inputSchema === 'object' && !Array.isArray(tool.inputSchema)))
+  return (
+    typeof tool.name === 'string' &&
+    typeof tool.description === 'string' &&
+    typeof tool.origin === 'string' &&
+    (tool.inputSchema === undefined ||
+      (tool.inputSchema !== null && typeof tool.inputSchema === 'object' && !Array.isArray(tool.inputSchema)))
+  )
 }
 
 function getInputSchema(inputSchema: object | undefined) {
@@ -77,7 +81,7 @@ export function createWebMCPClient(options: CreateWebMCPClientOptions = {}): Web
     }
 
     const descriptors = await modelContext.getTools({ fromOrigins })
-    return descriptors.filter(isToolDescriptor).filter(tool => allowedOrigins.has(tool.origin))
+    return descriptors.filter(isToolDescriptor).filter((tool) => allowedOrigins.has(tool.origin))
   }
 
   async function executeTool(
@@ -93,7 +97,7 @@ export function createWebMCPClient(options: CreateWebMCPClientOptions = {}): Web
   }
 
   async function callTool({ name, arguments: input = {}, options: callOptions }: WebMcpCallToolArgs) {
-    const matches = (await listTools()).filter(tool => tool.name === name)
+    const matches = (await listTools()).filter((tool) => tool.name === name)
 
     const match = matches[0]
     if (!match) {
@@ -126,14 +130,10 @@ export function createWebMCPClient(options: CreateWebMCPClientOptions = {}): Web
         toolSet[descriptor.name] = dynamicTool({
           description: descriptor.description,
           inputSchema: jsonSchema(getInputSchema(descriptor.inputSchema)),
-          execute: (input, { abortSignal }) => executeTool(
-            descriptor,
-            input as Record<string, unknown>,
-            { signal: abortSignal },
-          ),
+          execute: (input, { abortSignal }) =>
+            executeTool(descriptor, input as Record<string, unknown>, { signal: abortSignal }),
         })
-      }
-      catch {
+      } catch {
         // Ignore malformed descriptors so one third-party registration cannot disable text chat.
       }
     }

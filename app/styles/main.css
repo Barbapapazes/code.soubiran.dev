@@ -1,6 +1,5 @@
-@import "tailwindcss";
-@import "@nuxt/ui";
-
+@import 'tailwindcss';
+@import '@nuxt/ui';
 
 @theme {
   --font-sans: 'DM Sans', sans-serif;

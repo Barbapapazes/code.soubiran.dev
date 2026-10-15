@@ -30,16 +30,18 @@ export function sentryOptions(env: ObservabilityEnvironment): CloudflareOptions 
       frameContextLines: 0,
     },
     // evlog owns logs; console breadcrumbs would duplicate them and can carry content.
-    integrations: defaults => defaults.filter(integration => integration.name !== 'Console'),
+    integrations: (defaults) => defaults.filter((integration) => integration.name !== 'Console'),
     beforeSend(event) {
       event.message = undefined
       event.request = undefined
       event.user = undefined
       event.breadcrumbs = undefined
       event.extra = undefined
-      event.tags = Object.fromEntries(Object.entries(event.tags ?? {}).filter(([key]) =>
-        ['operation', 'request_id', 'browser_run_status'].includes(key),
-      ))
+      event.tags = Object.fromEntries(
+        Object.entries(event.tags ?? {}).filter(([key]) =>
+          ['operation', 'request_id', 'browser_run_status'].includes(key),
+        ),
+      )
       event.transaction = 'Worker request'
       event.contexts = { trace: event.contexts?.trace }
       for (const exception of event.exception?.values ?? []) {
@@ -88,13 +90,18 @@ export function correlateRequest(requestId: unknown) {
 }
 
 export function safeWorkerError(error: unknown): Error {
-  const safe = new Error(error instanceof BrowserRunError
-    ? `Browser Run could not generate the code image (${error.status})`
-    : 'Worker operation failed')
+  const safe = new Error(
+    error instanceof BrowserRunError
+      ? `Browser Run could not generate the code image (${error.status})`
+      : 'Worker operation failed',
+  )
   safe.name = error instanceof BrowserRunError ? 'BrowserRunError' : 'WorkerError'
   // Preserve call sites, not messages or causes (which may contain submitted content).
   if (error instanceof Error && error.stack) {
-    safe.stack = `${safe.name}: ${safe.message}\n${error.stack.split('\n').filter(line => /^\s+at /.test(line)).join('\n')}`
+    safe.stack = `${safe.name}: ${safe.message}\n${error.stack
+      .split('\n')
+      .filter((line) => /^\s+at /.test(line))
+      .join('\n')}`
   }
   return safe
 }

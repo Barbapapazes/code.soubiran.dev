@@ -1,23 +1,29 @@
 import type { CloudflareOptions, ErrorEvent } from '@sentry/cloudflare'
 import { captureException } from '@sentry/cloudflare'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vite-plus/test'
 import { BrowserRunError } from './errors'
 import { reportWorkerError, safeWorkerError, sentryOptions } from './observability'
 
-vi.mock('@sentry/cloudflare', async importOriginal => ({
-  ...await importOriginal<typeof import('@sentry/cloudflare')>(),
-  captureException: vi.fn(),
+vi.mock('@sentry/cloudflare', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@sentry/cloudflare')>()),
+  captureException: vi.fn<typeof captureException>(),
 }))
 
 describe('worker observability', () => {
   it('disables Sentry without a DSN and configures privacy and sampling with bindings', () => {
     expect(sentryOptions({}).enabled).toBe(false)
-    expect(sentryOptions({}).beforeSendLog!({
-      level: 'info',
-      message: 'Worker log',
-      attributes: {},
-    })).toBeNull()
-    const options = sentryOptions({ SENTRY_DSN: 'dsn', SENTRY_ENVIRONMENT: 'production', SENTRY_RELEASE: 'commit' })
+    expect(
+      sentryOptions({}).beforeSendLog!({
+        level: 'info',
+        message: 'Worker log',
+        attributes: {},
+      }),
+    ).toBeNull()
+    const options = sentryOptions({
+      SENTRY_DSN: 'dsn',
+      SENTRY_ENVIRONMENT: 'production',
+      SENTRY_RELEASE: 'commit',
+    })
     expect(options).toMatchObject({
       dsn: 'dsn',
       enabled: true,
@@ -50,7 +56,15 @@ describe('worker observability', () => {
       extra: { code: 'private content' },
       contexts: { mcp: { input: 'private content' } },
       tags: { operation: 'generate_code_image', client: 'private content' },
-      exception: { values: [{ type: 'Error', value: 'private content', stacktrace: { frames: [{ filename: 'worker/index.ts', lineno: 1 }] } }] },
+      exception: {
+        values: [
+          {
+            type: 'Error',
+            value: 'private content',
+            stacktrace: { frames: [{ filename: 'worker/index.ts', lineno: 1 }] },
+          },
+        ],
+      },
     }
     const result = await sentryOptions({}).beforeSend!(event, {})
     expect(JSON.stringify(result)).not.toContain('private')

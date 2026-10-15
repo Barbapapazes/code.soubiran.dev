@@ -1,5 +1,6 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vite-plus/test'
 import { ref } from 'vue'
+import { ZodError } from 'zod'
 import { createCaptureCodeTool } from '../../../editor/runtime/tools/captureCode'
 import { createSetCodeTool } from '../../../editor/runtime/tools/setCode'
 import { createSetCodeOptionsTool } from '../../../editor/runtime/tools/setCodeOptions'
@@ -15,7 +16,7 @@ describe('createAssistantTools', () => {
       title: ref(''),
       watermark: ref(''),
     }
-    const capture = vi.fn(async () => {})
+    const capture = vi.fn<() => Promise<void>>(async () => {})
     const tools = createAssistantTools([
       createSetCodeTool(code),
       createSetCodeOptionsTool(options),
@@ -31,17 +32,19 @@ describe('createAssistantTools', () => {
     expect(code.value).toBe('const answer = 42')
     expect(options.title.value).toBe('Answer')
     expect(capture).toHaveBeenCalledOnce()
-    await expect(tools.set_code!.execute!({ code: 42 }, context)).rejects.toThrow()
+    await expect(tools.set_code!.execute!({ code: 42 }, context)).rejects.toThrow(ZodError)
   })
 
   it('forwards the execution abort signal', async () => {
-    const execute = vi.fn(async () => 'done')
+    const execute = vi.fn<WebMCP.ModelContextTool['execute']>(async () => 'done')
     const controller = new AbortController()
     const tools = createAssistantTools([{ name: 'test', description: 'Test', execute }])
 
     await tools.test!.execute!({}, { toolCallId: 'test', messages: [], context: {}, abortSignal: controller.signal })
 
     expect(execute).toHaveBeenCalledWith({}, { signal: controller.signal })
-    expect(tools.test!.inputSchema).toMatchObject({ jsonSchema: { type: 'object', properties: {} } })
+    expect(tools.test!.inputSchema).toMatchObject({
+      jsonSchema: { type: 'object', properties: {} },
+    })
   })
 })

@@ -1,10 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": [
-      "ES2023",
-      "WebWorker"
-    ],
+    "lib": ["ES2023", "WebWorker"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": [],
@@ -13,8 +10,5 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": [
-    "worker/**/*.ts",
-    "shared/**/*.ts"
-  ]
+  "include": ["worker/**/*.ts", "shared/**/*.ts"]
 }

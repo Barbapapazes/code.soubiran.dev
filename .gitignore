@@ -11,3 +11,4 @@ components.d.ts
 *.tsbuildinfo
 .env
 .dev.vars*
+.vitest/

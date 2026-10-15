@@ -1,19 +1,17 @@
 {
   "name": "code.soubiran.dev",
-  "type": "module",
   "private": true,
-  "packageManager": "pnpm@12.9.1",
-  "engines": {
-    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
-  },
+  "type": "module",
   "scripts": {
     "dev": "nuxt dev",
     "prepare": "nuxt prepare",
     "build": "nuxt build",
     "typecheck": "nuxt typecheck",
-    "test": "vitest run --config vitest.config.ts",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix",
+    "test": "vp test",
+    "check": "vp check",
+    "lint": "vp lint .",
+    "lint:fix": "vp fmt && vp lint --fix",
+    "fmt": "vp fmt",
     "deploy": "cf deploy"
   },
   "dependencies": {
@@ -41,20 +39,22 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^9.5.1",
     "@cloudflare/vite-plugin": "2.0.0-beta.sha-52b0dc0e9",
     "@iconify-json/ph": "^1.2.2",
     "@types/dom-chromium-ai": "^0.0.17",
     "@types/node": "^26.6.4",
     "@vueuse/nuxt": "^15.0.0",
     "cf": "1.0.0-beta.12",
-    "eslint": "^10.12.0",
     "tailwindcss": "^4.3.3",
     "taze": "^21.3.0",
     "typescript": "~6.0.3",
-    "vite": "^8.3.3",
-    "vitest": "^5.0.3",
+    "vite": "catalog:",
+    "vite-plus": "catalog:",
     "vue-tsc": "^3.3.12",
     "webmcp-types": "^0.1.10"
-  }
+  },
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+  },
+  "packageManager": "pnpm@12.9.1"
 }

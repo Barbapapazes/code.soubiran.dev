@@ -37,8 +37,7 @@ export interface UseWebMCPReturn {
 function safeStringify(value: unknown): string {
   try {
     return JSON.stringify(value)
-  }
-  catch {
+  } catch {
     return String(value)
   }
 }
@@ -60,11 +59,7 @@ function toToolResponse(value: unknown): WebMCPToolResponse {
 }
 
 function toErrorResponse(error: unknown): WebMCPToolResponse {
-  const text = error instanceof Error
-    ? error.message
-    : typeof error === 'string'
-      ? error
-      : safeStringify(error)
+  const text = error instanceof Error ? error.message : typeof error === 'string' ? error : safeStringify(error)
 
   return { content: [{ type: 'text', text }], isError: true }
 }
@@ -73,12 +68,16 @@ export function useWebMCP<Args extends Record<string, unknown>, Result>(
   options: UseWebMCPOptions<Args, Result>,
 ): UseWebMCPReturn {
   // Chromium exposes registration on navigator; older prototypes used document.
-  const navigatorContext = (globalThis.navigator as (Navigator & {
-    modelContext?: {
-      registerTool: (tool: WebMCP.ModelContextTool) => void | Promise<void>
-      unregisterTool: (name: string) => void
-    }
-  }) | undefined)?.modelContext
+  const navigatorContext = (
+    globalThis.navigator as
+      | (Navigator & {
+          modelContext?: {
+            registerTool: (tool: WebMCP.ModelContextTool) => void | Promise<void>
+            unregisterTool: (name: string) => void
+          }
+        })
+      | undefined
+  )?.modelContext
   const documentContext = globalThis.document?.modelContext
   const modelContext = navigatorContext ?? documentContext
   const isSupported = computed(() => typeof modelContext?.registerTool === 'function')
@@ -123,12 +122,10 @@ export function useWebMCP<Args extends Record<string, unknown>, Result>(
             }
 
             return toToolResponse(output)
-          }
-          catch (cause) {
+          } catch (cause) {
             try {
               options.onError?.(cause)
-            }
-            catch {
+            } catch {
               // Error observers must not make the WebMCP tool execution fail.
             }
 
@@ -144,16 +141,14 @@ export function useWebMCP<Args extends Record<string, unknown>, Result>(
           return
         }
         unregister = () => navigatorContext.unregisterTool(tool.name)
-      }
-      else if (documentContext) {
+      } else if (documentContext) {
         await documentContext.registerTool(tool, { signal: nextController.signal })
       }
 
       if (controller === nextController && !nextController.signal.aborted) {
         isRegistered.value = true
       }
-    }
-    catch (cause) {
+    } catch (cause) {
       if (controller === nextController && !nextController.signal.aborted) {
         error.value = cause instanceof Error ? cause : new Error(safeStringify(cause))
       }
@@ -165,8 +160,8 @@ export function useWebMCP<Args extends Record<string, unknown>, Result>(
       isSupported,
       () => toValue(options.name),
       () => toValue(options.description),
-      () => toValue(options.inputSchema) === undefined ? '' : safeStringify(toValue(options.inputSchema)),
-      () => toValue(options.annotations) === undefined ? '' : safeStringify(toValue(options.annotations)),
+      () => (toValue(options.inputSchema) === undefined ? '' : safeStringify(toValue(options.inputSchema))),
+      () => (toValue(options.annotations) === undefined ? '' : safeStringify(toValue(options.annotations))),
       () => toValue(options.enabled ?? true),
     ],
     () => {

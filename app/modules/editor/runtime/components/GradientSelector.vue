@@ -5,7 +5,8 @@ import { gradientNames, gradients, gradientValues } from '../types/gradient'
 const gradientSelector = tv({
   slots: {
     base: 'flex flex-wrap items-center justify-center gap-2',
-    swatch: 'relative size-6 shrink-0 rounded-full cursor-pointer transition-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white hover:scale-110',
+    swatch:
+      'relative size-6 shrink-0 rounded-full cursor-pointer transition-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white hover:scale-110',
     icon: 'absolute inset-0 m-auto size-3.5 text-white drop-shadow-sm',
   },
 })
@@ -30,16 +31,8 @@ const ui = computed(() => gradientSelector())
 </script>
 
 <template>
-  <div
-    :class="ui.base({ class: [props.ui?.base, props.class] })"
-    role="group"
-    aria-label="Background gradient"
-  >
-    <UTooltip
-      v-for="gradient in gradientValues"
-      :key="gradient"
-      :text="gradientNames[gradient]"
-    >
+  <div :class="ui.base({ class: [props.ui?.base, props.class] })" role="group" aria-label="Background gradient">
+    <UTooltip v-for="gradient in gradientValues" :key="gradient" :text="gradientNames[gradient]">
       <button
         type="button"
         :class="ui.swatch({ class: [props.ui?.swatch, gradients[gradient]] })"

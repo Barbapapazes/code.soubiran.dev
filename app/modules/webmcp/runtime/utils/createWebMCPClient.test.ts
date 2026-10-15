@@ -1,5 +1,5 @@
 import type { WebMcpDocument } from './createWebMCPClient'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vite-plus/test'
 import { createWebMCPClient } from './createWebMCPClient'
 
 const origin = 'https://code.soubiran.dev'
@@ -33,7 +33,7 @@ describe('createWebMCPClient', () => {
   })
 
   it('discovers approved tools and adapts them for the AI SDK', async () => {
-    const executeTool = vi.fn(async () => 'Updated the editor.')
+    const executeTool = vi.fn<WebMCP.ModelContext['executeTool']>(async () => 'Updated the editor.')
     const client = await createWebMCPClient({
       document: createDocument({
         executeTool,
@@ -56,19 +56,15 @@ describe('createWebMCPClient', () => {
       throw new Error('Expected the set_code WebMCP tool.')
     }
 
-    await expect(setCode.execute({ code: 'const answer = 42' }, { abortSignal: controller.signal } as never))
-      .resolves
-      .toBe('Updated the editor.')
-    expect(executeTool).toHaveBeenCalledWith(
-      tool(),
-      { code: 'const answer = 42' },
-      { signal: controller.signal },
-    )
+    await expect(
+      setCode.execute({ code: 'const answer = 42' }, { abortSignal: controller.signal } as never),
+    ).resolves.toBe('Updated the editor.')
+    expect(executeTool).toHaveBeenCalledWith(tool(), { code: 'const answer = 42' }, { signal: controller.signal })
   })
 
   it('supports tools without an input schema or arguments', async () => {
     const descriptor = tool({ inputSchema: undefined })
-    const executeTool = vi.fn(async () => 'Done.')
+    const executeTool = vi.fn<WebMCP.ModelContext['executeTool']>(async () => 'Done.')
     const client = createWebMCPClient({
       document: createDocument({ executeTool, getTools: async () => [descriptor] }),
     })
@@ -94,9 +90,9 @@ describe('createWebMCPClient', () => {
 
   it('accepts explicitly allowlisted cross-origin tools', async () => {
     const externalTool = tool({ name: 'external', origin: 'https://example.com' })
-    const getTools = vi.fn(async () => [externalTool])
+    const getTools = vi.fn<WebMCP.ModelContext['getTools']>(async () => [externalTool])
     const client = await createWebMCPClient({
-      document: createDocument({ executeTool: vi.fn(), getTools }),
+      document: createDocument({ executeTool: vi.fn<WebMCP.ModelContext['executeTool']>(), getTools }),
       fromOrigins: ['https://example.com'],
     })
 
@@ -105,16 +101,21 @@ describe('createWebMCPClient', () => {
   })
 
   it('rejects ambiguous calls and forwards named calls to the browser', async () => {
-    const executeTool = vi.fn(async () => 'Updated the editor.')
+    const executeTool = vi.fn<WebMCP.ModelContext['executeTool']>(async () => 'Updated the editor.')
     const namedClient = await createWebMCPClient({
       document: createDocument({ executeTool, getTools: async () => [tool()] }),
     })
 
-    await expect(namedClient.callTool({ name: 'set_code', arguments: { code: 'x' } })).resolves.toBe('Updated the editor.')
+    await expect(namedClient.callTool({ name: 'set_code', arguments: { code: 'x' } })).resolves.toBe(
+      'Updated the editor.',
+    )
     expect(executeTool).toHaveBeenCalledWith(tool(), { code: 'x' }, { signal: undefined })
 
     const ambiguousClient = await createWebMCPClient({
-      document: createDocument({ executeTool, getTools: async () => [tool(), tool({ origin: 'https://example.com' })] }),
+      document: createDocument({
+        executeTool,
+        getTools: async () => [tool(), tool({ origin: 'https://example.com' })],
+      }),
       fromOrigins: ['https://example.com'],
     })
     await expect(ambiguousClient.callTool({ name: 'set_code' })).rejects.toThrow('ambiguous')
@@ -122,10 +123,10 @@ describe('createWebMCPClient', () => {
   })
 
   it('lists the initially available tools without subscribing to changes', async () => {
-    const getTools = vi.fn(async () => [tool()])
+    const getTools = vi.fn<WebMCP.ModelContext['getTools']>(async () => [tool()])
     const client = await createWebMCPClient({
       document: createDocument({
-        executeTool: vi.fn(),
+        executeTool: vi.fn<WebMCP.ModelContext['executeTool']>(),
         getTools,
       }),
     })

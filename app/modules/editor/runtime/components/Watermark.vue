@@ -27,12 +27,7 @@ const ui = computed(() => watermark())
 </script>
 
 <template>
-  <EditableRoot
-    v-model="text"
-    :class="ui.base({ class: [props.ui?.base, props.class] })"
-    placeholder=""
-    auto-resize
-  >
+  <EditableRoot v-model="text" :class="ui.base({ class: [props.ui?.base, props.class] })" placeholder="" auto-resize>
     <EditableArea>
       <EditablePreview as="div" class="min-h-4 min-w-10" />
       <EditableInput />

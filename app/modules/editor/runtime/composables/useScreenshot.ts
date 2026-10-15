@@ -12,8 +12,7 @@ export function useScreenshot(element: MaybeRefOrGetter<any>) {
       a.href = dataUrl
       a.click()
       track('capture_success', {})
-    }
-    catch (error) {
+    } catch (error) {
       track('capture_failure', {})
       throw error
     }

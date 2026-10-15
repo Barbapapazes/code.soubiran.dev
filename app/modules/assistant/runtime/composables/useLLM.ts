@@ -1,14 +1,14 @@
 import type { BrowserAIChatLanguageModel } from '@browser-ai/core'
 import { browserAI, doesBrowserSupportBrowserAI } from '@browser-ai/core'
 
-export type LLMAvailability
-  = | 'checking'
-    | 'unavailable'
-    | 'available'
-    | 'downloadable'
-    | 'downloading'
-    | 'preparing'
-    | 'error'
+export type LLMAvailability =
+  | 'checking'
+  | 'unavailable'
+  | 'available'
+  | 'downloadable'
+  | 'downloading'
+  | 'preparing'
+  | 'error'
 
 export function useLLM() {
   const availability = ref<LLMAvailability>('checking')
@@ -18,7 +18,7 @@ export function useLLM() {
   let initializationPromise: Promise<void> | undefined
 
   function getModel() {
-    return model.value ??= browserAI('text')
+    return (model.value ??= browserAI('text'))
   }
 
   function getErrorMessage(error: unknown) {
@@ -46,8 +46,7 @@ export function useLLM() {
       }
 
       availability.value = 'unavailable'
-    }
-    catch {
+    } catch {
       availability.value = 'unavailable'
     }
   }
@@ -69,12 +68,14 @@ export function useLLM() {
 
       downloadProgress.value = 100
       availability.value = 'available'
-    })().catch((cause: unknown) => {
-      initializationError.value = getErrorMessage(cause)
-      availability.value = 'error'
-    }).finally(() => {
-      initializationPromise = undefined
-    })
+    })()
+      .catch((cause: unknown) => {
+        initializationError.value = getErrorMessage(cause)
+        availability.value = 'error'
+      })
+      .finally(() => {
+        initializationPromise = undefined
+      })
 
     return initializationPromise
   }

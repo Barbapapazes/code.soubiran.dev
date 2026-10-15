@@ -1,5 +1,5 @@
 import type { CodeImageEnvironment } from './types'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vite-plus/test'
 import { BrowserRunError } from './errors'
 import { createCodeImageMcpServer, executeGenerateCodeImageTool } from './mcp'
 
@@ -9,7 +9,10 @@ const env: CodeImageEnvironment = {
 }
 
 function logger() {
-  return { set: vi.fn(), setLevel: vi.fn() }
+  return {
+    set: vi.fn<NonNullable<Parameters<typeof executeGenerateCodeImageTool>[2]>['set']>(),
+    setLevel: vi.fn<NonNullable<Parameters<typeof executeGenerateCodeImageTool>[2]>['setLevel']>(),
+  }
 }
 
 describe('code image MCP tool', () => {
@@ -19,19 +22,31 @@ describe('code image MCP tool', () => {
 
   it('returns PNG content and logs metadata without source code or credentials', async () => {
     const log = logger()
-    const generateImage = vi.fn(async () => ({ data: 'aGVsbG8=', mimeType: 'image/png' }))
-    const input = { code: 'private source code', title: 'private title', language: 'typescript' as const }
+    const generateImage = vi.fn<typeof import('./code-image-screenshot').generateCodeImage>(async () => ({
+      data: 'aGVsbG8=',
+      mimeType: 'image/png',
+    }))
+    const input = {
+      code: 'private source code',
+      title: 'private title',
+      language: 'typescript' as const,
+    }
 
     const result = await executeGenerateCodeImageTool(env, input, log, generateImage)
 
     expect(generateImage).toHaveBeenCalledExactlyOnceWith(env, input)
-    expect(result).toEqual({ content: [{ type: 'image', data: 'aGVsbG8=', mimeType: 'image/png' }] })
+    expect(result).toEqual({
+      content: [{ type: 'image', data: 'aGVsbG8=', mimeType: 'image/png' }],
+    })
     expect(log.set).toHaveBeenCalledWith({
       mcp: expect.objectContaining({
         tool: 'generate_code_image',
         outcome: 'success',
         image: { bytes: 5, mimeType: 'image/png' },
-        input: expect.objectContaining({ code: { supplied: true, length: 19 }, language: 'typescript' }),
+        input: expect.objectContaining({
+          code: { supplied: true, length: 19 },
+          language: 'typescript',
+        }),
       }),
     })
     expect(JSON.stringify(log.set.mock.calls)).not.toContain(input.code)
@@ -41,7 +56,7 @@ describe('code image MCP tool', () => {
 
   it('returns a safe MCP error when Browser Run fails', async () => {
     const log = logger()
-    const generateImage = vi.fn(async () => {
+    const generateImage = vi.fn<typeof import('./code-image-screenshot').generateCodeImage>(async () => {
       throw new BrowserRunError(503, 'private upstream details')
     })
 
@@ -53,7 +68,10 @@ describe('code image MCP tool', () => {
     })
     expect(log.setLevel).toHaveBeenCalledWith('error')
     expect(log.set).toHaveBeenCalledWith({
-      mcp: expect.objectContaining({ outcome: 'error', error: { type: 'browser-run', status: 503 } }),
+      mcp: expect.objectContaining({
+        outcome: 'error',
+        error: { type: 'browser-run', status: 503 },
+      }),
     })
     expect(JSON.stringify(log.set.mock.calls)).not.toContain('private upstream details')
   })

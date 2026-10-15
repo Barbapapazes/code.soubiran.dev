@@ -1,7 +1,15 @@
 <script lang="ts">
 import { useChat } from '@ai-sdk/vue'
 import { isPartStreaming, isToolStreaming } from '@nuxt/ui/utils/ai'
-import { DirectChatTransport, getToolName, isDynamicToolUIPart, isReasoningUIPart, isStepCount, isTextUIPart, ToolLoopAgent } from 'ai'
+import {
+  DirectChatTransport,
+  getToolName,
+  isDynamicToolUIPart,
+  isReasoningUIPart,
+  isStepCount,
+  isTextUIPart,
+  ToolLoopAgent,
+} from 'ai'
 import { useLLM } from '../composables/useLLM'
 import { createAssistantTools } from '../utils/createAssistantTools'
 import AssistantMarkdown from './AssistantMarkdown'
@@ -38,19 +46,11 @@ const { track } = useAnalytics()
 const { getModel } = useLLM()
 
 const transport = shallowRef<DirectChatTransport | null>()
-const {
-  clearError,
-  error,
-  messages,
-  sendMessage,
-  status,
-  stop,
-} = useChat(() => ({
+const { clearError, error, messages, sendMessage, status, stop } = useChat(() => ({
   transport: transport.value!,
   onError: () => track('assistant_message_failure', {}),
   onFinish: ({ isAbort, isError, isDisconnect }) => {
-    if (!isAbort && !isError && !isDisconnect)
-      track('assistant_message_success', {})
+    if (!isAbort && !isError && !isDisconnect) track('assistant_message_success', {})
   },
 }))
 
@@ -136,27 +136,27 @@ const ui = computed(() => assistantPanel())
         v-if="status === 'ready' && messages.length === 0"
         :class="ui.state({ class: [props.ui?.state, props.ui?.empty] })"
       >
-        <p class="font-medium text-default">
-          Ask me anything
-        </p>
-        <p>
-          Responses stay on this device and disappear when this page reloads.
-        </p>
+        <p class="font-medium text-default">Ask me anything</p>
+        <p>Responses stay on this device and disappear when this page reloads.</p>
       </div>
 
       <div v-else :class="ui.messageList({ class: props.ui?.messageList })">
         <article
           v-for="message in messages"
           :key="message.id"
-          :class="ui.message({ class: [
-            props.ui?.message,
-            message.role === 'user' ? [ui.userMessage(), props.ui?.userMessage] : [ui.assistantMessage(), props.ui?.assistantMessage],
-          ] })"
+          :class="
+            ui.message({
+              class: [
+                props.ui?.message,
+                message.role === 'user'
+                  ? [ui.userMessage(), props.ui?.userMessage]
+                  : [ui.assistantMessage(), props.ui?.assistantMessage],
+              ],
+            })
+          "
         >
           <template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}`">
-            <p
-              v-if="message.role === 'user' && isTextUIPart(part)"
-            >
+            <p v-if="message.role === 'user' && isTextUIPart(part)">
               {{ part.text }}
             </p>
 
@@ -169,20 +169,12 @@ const ui = computed(() => assistantPanel())
                 chevron="leading"
               >
                 <Suspense>
-                  <AssistantMarkdown
-                    :value="part.text"
-                    :streaming="isPartStreaming(part)"
-                  />
+                  <AssistantMarkdown :value="part.text" :streaming="isPartStreaming(part)" />
                 </Suspense>
               </UChatReasoning>
 
-              <Suspense
-                v-else-if="isTextUIPart(part) && part.text.length > 0"
-              >
-                <AssistantMarkdown
-                  :value="part.text"
-                  :streaming="isPartStreaming(part)"
-                />
+              <Suspense v-else-if="isTextUIPart(part) && part.text.length > 0">
+                <AssistantMarkdown :value="part.text" :streaming="isPartStreaming(part)" />
               </Suspense>
 
               <UChatTool
@@ -195,10 +187,7 @@ const ui = computed(() => assistantPanel())
           </template>
         </article>
 
-        <p
-          v-if="status === 'error' && error"
-          :class="ui.error({ class: props.ui?.error })"
-        >
+        <p v-if="status === 'error' && error" :class="ui.error({ class: props.ui?.error })">
           {{ error.message }}
         </p>
 
@@ -227,7 +216,9 @@ const ui = computed(() => assistantPanel())
             </span>
 
             <UButton
-              :icon="status === 'ready' ? 'i-ph-paper-plane-tilt' : status === 'error' ? 'i-ph-arrow-clockwise' : 'i-ph-stop'"
+              :icon="
+                status === 'ready' ? 'i-ph-paper-plane-tilt' : status === 'error' ? 'i-ph-arrow-clockwise' : 'i-ph-stop'
+              "
               :aria-label="status === 'streaming' ? 'Stop response' : 'Send message'"
               color="neutral"
               size="sm"

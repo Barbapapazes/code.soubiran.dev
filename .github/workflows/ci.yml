@@ -23,29 +23,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@6a033122543ee100d01838245fe74a26a038da6d # v1.21.2
         with:
           node-version: 24.15.0
-          cache: pnpm
+          cache: true
+          run-install: false
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install --frozen-lockfile
 
       - name: Prepare Nuxt types
-        run: pnpm run prepare
+        run: vp run prepare
 
-      - name: Run lint
-        run: pnpm run lint
+      - name: Check formatting and lint
+        run: vp check
 
       - name: Run typecheck
-        run: pnpm run typecheck
+        run: vp run typecheck
 
       - name: Run tests
-        run: pnpm run test
+        run: vp test
 
       - name: Run build
-        run: pnpm run build
+        run: vp run build

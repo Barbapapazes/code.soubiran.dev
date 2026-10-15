@@ -12,10 +12,7 @@ initWorkersLogger({
   redact: true,
   sampling: {
     rates: { info: 10, error: 100, warn: 100 },
-    keep: [
-      { status: 400 },
-      { duration: 1000 },
-    ],
+    keep: [{ status: 400 }, { duration: 1000 }],
   },
 })
 
@@ -38,17 +35,14 @@ export const handleMcpRequest = {
           mcp: { endpoint: 'mcp' },
         })
 
-        const handler = createMcpHandler(
-          () => createCodeImageMcpServer(env, log),
-          {
-            route: mcpPath,
-            allowedHostnames: ['code.soubiran.dev', 'localhost', '127.0.0.1'],
-            allowedOriginHostnames: ['code.soubiran.dev', 'localhost', '127.0.0.1'],
-            corsOptions: {
-              origin: 'https://code.soubiran.dev',
-            },
+        const handler = createMcpHandler(() => createCodeImageMcpServer(env, log), {
+          route: mcpPath,
+          allowedHostnames: ['code.soubiran.dev', 'localhost', '127.0.0.1'],
+          allowedOriginHostnames: ['code.soubiran.dev', 'localhost', '127.0.0.1'],
+          corsOptions: {
+            origin: 'https://code.soubiran.dev',
           },
-        )
+        })
 
         try {
           const response = await handler(request, env, ctx as Parameters<typeof handler>[2])
@@ -56,8 +50,7 @@ export const handleMcpRequest = {
             log.setLevel(response.status >= 500 ? 'error' : 'warn')
           }
           return response
-        }
-        catch (error) {
+        } catch (error) {
           // Both evlog and the outer Sentry wrapper see only the safe exception.
           throw safeWorkerError(error)
         }

@@ -9,7 +9,7 @@ const languages = [
   { label: 'PHP', value: 'php' },
   { label: 'TypeScript', value: 'typescript' },
   { label: 'Vue', value: 'vue' },
-] satisfies { label: string, value: CodeImageLanguage }[]
+] satisfies { label: string; value: CodeImageLanguage }[]
 
 export function useLanguage() {
   language.value = params.language || 'markdown'

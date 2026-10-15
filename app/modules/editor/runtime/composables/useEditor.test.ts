@@ -1,14 +1,15 @@
 import type { SearchParams } from '../types/search-params'
 import { domToPng } from 'modern-screenshot'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { effectScope, nextTick, reactive, ref, toValue, watch } from 'vue'
 import { base64Decode, base64Encode } from '#shared/base64'
 
-vi.mock('modern-screenshot', () => ({ domToPng: vi.fn() }))
+vi.mock('modern-screenshot', () => ({ domToPng: vi.fn<typeof domToPng>() }))
 
 describe('editor module capabilities', () => {
   let scope: ReturnType<typeof effectScope>
-  const track = vi.fn()
+  const track =
+    vi.fn<ReturnType<typeof import('../../../analytics/runtime/composables/useAnalytics').useAnalytics>['track']>()
   const params = reactive<SearchParams>({})
 
   beforeEach(() => {
@@ -48,16 +49,18 @@ describe('editor module capabilities', () => {
     expect(editor.gradient.value).toBe('blue')
     expect(editor.title.value).toBe('Example')
     expect(editor.watermark.value).toBe('Author')
-    expect(editor.tools.map(tool => tool.name)).toEqual(['set_code', 'set_code_options', 'capture_code'])
+    expect(editor.tools.map((tool) => tool.name)).toEqual(['set_code', 'set_code_options', 'capture_code'])
 
-    await editor.tools.find(tool => tool.name === 'set_code')!.execute({ code: 'echo "hello";' })
-    await editor.tools.find(tool => tool.name === 'set_code_options')!.execute({
-      language: 'php',
-      size: 'sm',
-      gradient: 'sunset',
-      title: '',
-      watermark: '',
-    })
+    await editor.tools.find((tool) => tool.name === 'set_code')!.execute({ code: 'echo "hello";' })
+    await editor.tools
+      .find((tool) => tool.name === 'set_code_options')!
+      .execute({
+        language: 'php',
+        size: 'sm',
+        gradient: 'sunset',
+        title: '',
+        watermark: '',
+      })
     await nextTick()
 
     expect(editor.code.value).toBe('echo "hello";')
@@ -69,20 +72,23 @@ describe('editor module capabilities', () => {
 
   it('captures the current workspace element through the shared capture tool', async () => {
     const element = ref<HTMLElement>()
-    const anchor = { click: vi.fn(), download: '', href: '' }
-    vi.stubGlobal('document', { createElement: vi.fn(() => anchor) })
+    const anchor = { click: vi.fn<() => void>(), download: '', href: '' }
+    vi.stubGlobal('document', { createElement: vi.fn<() => typeof anchor>(() => anchor) })
     vi.mocked(domToPng).mockResolvedValue('data:image/png;base64,image')
     const { useEditor } = await import('./useEditor')
     const editor = scope.run(() => useEditor(() => element.value))!
 
     // The template ref is populated after useEditor runs, not at setup time.
     element.value = { id: 'workspace' } as HTMLElement
-    await editor.tools.find(tool => tool.name === 'capture_code')!.execute({})
+    await editor.tools.find((tool) => tool.name === 'capture_code')!.execute({})
 
     expect(domToPng).toHaveBeenCalledWith(element.value, { scale: 4 })
     expect(anchor.download).toBe('screenshot.png')
     expect(anchor.href).toBe('data:image/png;base64,image')
     expect(anchor.click).toHaveBeenCalledOnce()
-    expect(track.mock.calls).toEqual([['capture_start', {}], ['capture_success', {}]])
+    expect(track.mock.calls).toEqual([
+      ['capture_start', {}],
+      ['capture_success', {}],
+    ])
   })
 })

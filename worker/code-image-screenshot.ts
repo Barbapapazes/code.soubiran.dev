@@ -6,17 +6,14 @@ import { BrowserRunError } from './errors'
 
 const browserRunUrl = 'https://api.cloudflare.com/client/v4/accounts'
 
-export async function generateCodeImage(
-  env: CodeImageEnvironment,
-  input: CodeImageInput,
-): Promise<CodeImage> {
+export async function generateCodeImage(env: CodeImageEnvironment, input: CodeImageInput): Promise<CodeImage> {
   const endpoint = new URL(`${browserRunUrl}/${env.BROWSER_RUN_ACCOUNT_ID}/browser-run/screenshot`)
   endpoint.searchParams.set('browser', 'kitesurf')
 
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${env.BROWSER_RUN_API_TOKEN}`,
+      Authorization: `Bearer ${env.BROWSER_RUN_API_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({

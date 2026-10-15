@@ -1,21 +1,24 @@
 import type { WorkerEnvironment } from './index'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vite-plus/test'
 import worker from './index'
 import { handleMcpRequest } from './mcp-handler'
 
 vi.mock('./mcp-handler', () => ({
-  handleMcpRequest: { fetch: vi.fn(async () => new Response('MCP')) },
+  handleMcpRequest: { fetch: vi.fn<typeof handleMcpRequest.fetch>(async () => new Response('MCP')) },
 }))
 
 function environment(): WorkerEnvironment {
   return {
     BROWSER_RUN_ACCOUNT_ID: 'account',
     BROWSER_RUN_API_TOKEN: 'secret',
-    ASSETS: { fetch: vi.fn(async () => new Response('SPA')) },
+    ASSETS: { fetch: vi.fn<WorkerEnvironment['ASSETS']['fetch']>(async () => new Response('SPA')) },
   }
 }
 
-const context = { waitUntil: vi.fn(), passThroughOnException: vi.fn() } as Parameters<typeof worker.fetch>[2]
+const context = {
+  waitUntil: vi.fn<(task: Promise<unknown>) => void>(),
+  passThroughOnException: vi.fn<() => void>(),
+} as Parameters<typeof worker.fetch>[2]
 
 describe('worker routing', () => {
   it.each(['GET', 'POST', 'DELETE'])('routes MCP %s requests with bindings and execution context', async (method) => {
@@ -25,7 +28,11 @@ describe('worker routing', () => {
     const response = await worker.fetch(request, env, context)
 
     expect(await response.text()).toBe('MCP')
-    expect(handleMcpRequest.fetch).toHaveBeenLastCalledWith(request, env, expect.objectContaining({ waitUntil: expect.any(Function) }))
+    expect(handleMcpRequest.fetch).toHaveBeenLastCalledWith(
+      request,
+      env,
+      expect.objectContaining({ waitUntil: expect.any(Function) }),
+    )
     // Sentry binds/wraps ExecutionContext methods to keep telemetry alive.
     const wrappedContext = vi.mocked(handleMcpRequest.fetch).mock.lastCall![2]
     const task = Promise.resolve()
@@ -34,12 +41,15 @@ describe('worker routing', () => {
     expect(env.ASSETS.fetch).not.toHaveBeenCalled()
   })
 
-  it.each(['/', '/?code=aGVsbG8%3D', '/_nuxt/app.js', '/mcp/other'])('delegates %s to the assets binding', async (path) => {
-    const env = environment()
-    const request = new Request(`https://code.soubiran.dev${path}`)
-    const response = await worker.fetch(request, env, context)
+  it.each(['/', '/?code=aGVsbG8%3D', '/_nuxt/app.js', '/mcp/other'])(
+    'delegates %s to the assets binding',
+    async (path) => {
+      const env = environment()
+      const request = new Request(`https://code.soubiran.dev${path}`)
+      const response = await worker.fetch(request, env, context)
 
-    expect(await response.text()).toBe('SPA')
-    expect(env.ASSETS.fetch).toHaveBeenCalledExactlyOnceWith(request)
-  })
+      expect(await response.text()).toBe('SPA')
+      expect(env.ASSETS.fetch).toHaveBeenCalledExactlyOnceWith(request)
+    },
+  )
 })

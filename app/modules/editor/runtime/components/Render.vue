@@ -23,7 +23,10 @@ const props = defineProps<RenderProps>()
 defineEmits<RenderEmits>()
 defineSlots<RenderSlots>()
 
-const { html } = await useShiki(() => props.code, () => props.language)
+const { html } = await useShiki(
+  () => props.code,
+  () => props.language,
+)
 
 const ui = computed(() => render())
 </script>

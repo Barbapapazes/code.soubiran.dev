@@ -8,10 +8,7 @@ let highlighter: HighlighterCore | null = null
 export async function useShiki(code: MaybeRefOrGetter<string>, lang: MaybeRefOrGetter<CodeImageLanguage>) {
   if (!highlighter) {
     highlighter = await createHighlighterCore({
-      themes: [
-        import('@shikijs/themes/github-dark'),
-        import('@shikijs/themes/github-light'),
-      ],
+      themes: [import('@shikijs/themes/github-dark'), import('@shikijs/themes/github-light')],
       langs: [
         import('@shikijs/langs/vue'),
         import('@shikijs/langs/typescript'),

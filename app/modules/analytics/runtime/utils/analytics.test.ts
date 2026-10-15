@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vite-plus/test'
 import { sanitizeAnalyticsPayload } from './analytics'
 
 describe('sanitizeAnalyticsPayload', () => {
@@ -30,9 +30,11 @@ describe('sanitizeAnalyticsPayload', () => {
   })
 
   it('strips fragments even without query parameters', () => {
-    expect(sanitizeAnalyticsPayload('event', {
-      url: '/#private',
-      referrer: 'https://example.com/#secret',
-    })).toMatchObject({ url: '/', referrer: 'https://example.com/' })
+    expect(
+      sanitizeAnalyticsPayload('event', {
+        url: '/#private',
+        referrer: 'https://example.com/#secret',
+      }),
+    ).toMatchObject({ url: '/', referrer: 'https://example.com/' })
   })
 })

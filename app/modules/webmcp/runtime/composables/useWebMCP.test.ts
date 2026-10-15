@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import { effectScope } from 'vue'
 import { useWebMCP } from './useWebMCP'
 
@@ -9,7 +9,7 @@ afterEach(() => vi.unstubAllGlobals())
 describe('useWebMCP', () => {
   it('registers on navigator and unregisters when the scope is disposed', async () => {
     const registerTool = vi.fn<(tool: WebMCP.ModelContextTool) => void>()
-    const unregisterTool = vi.fn()
+    const unregisterTool = vi.fn<(name: string) => void>()
     vi.stubGlobal('navigator', { modelContext: { registerTool, unregisterTool } })
     vi.stubGlobal('document', {})
     const scope = effectScope()
@@ -19,14 +19,18 @@ describe('useWebMCP', () => {
     expect(state.isSupported.value).toBe(true)
     expect(state.isRegistered.value).toBe(true)
     expect(registerTool).toHaveBeenCalledWith(expect.objectContaining({ name: 'test' }))
-    await expect(registerTool.mock.calls[0]![0].execute({}, { signal: new AbortController().signal })).resolves.toEqual({ content: [{ type: 'text', text: 'done' }] })
+    await expect(registerTool.mock.calls[0]![0].execute({}, { signal: new AbortController().signal })).resolves.toEqual(
+      { content: [{ type: 'text', text: 'done' }] },
+    )
 
     scope.stop()
     expect(unregisterTool).toHaveBeenCalledWith('test')
   })
 
   it('keeps supporting document registration with abort-based cleanup', async () => {
-    const registerTool = vi.fn<(tool: WebMCP.ModelContextTool, options: { signal: AbortSignal }) => Promise<void>>(async () => {})
+    const registerTool = vi.fn<(tool: WebMCP.ModelContextTool, options: { signal: AbortSignal }) => Promise<void>>(
+      async () => {},
+    )
     vi.stubGlobal('navigator', {})
     vi.stubGlobal('document', { modelContext: { registerTool } })
     const scope = effectScope()
