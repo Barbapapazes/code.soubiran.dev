@@ -6,7 +6,10 @@ export function useScreenshot(element: MaybeRefOrGetter<any>) {
   async function capture() {
     track('capture_start', {})
     try {
-      const dataUrl = await domToPng(toValue(element), { scale: 4 })
+      const dataUrl = await domToPng(toValue(element), {
+        scale: 4,
+        filter: (node) => !(node.nodeType === 1 && (node as Element).hasAttribute('data-editor-control')),
+      })
       const a = document.createElement('a')
       a.download = 'screenshot.png'
       a.href = dataUrl

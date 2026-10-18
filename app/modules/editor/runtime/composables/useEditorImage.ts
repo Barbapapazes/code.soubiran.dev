@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 
-export const imageAccept = 'image/png,image/jpeg,image/webp,image/gif,image/avif,image/svg+xml'
+const imageAccept = 'image/png,image/jpeg,image/webp,image/gif,image/avif,image/svg+xml'
 const imageTypes = new Set(imageAccept.split(','))
 const maxImageSize = 5 * 1024 * 1024
 

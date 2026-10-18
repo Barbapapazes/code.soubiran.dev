@@ -92,7 +92,12 @@ describe('editor module capabilities', () => {
     element.value = { id: 'workspace' } as HTMLElement
     await editor.tools.find((tool) => tool.name === 'capture_code')!.execute({})
 
-    expect(domToPng).toHaveBeenCalledWith(element.value, { scale: 4 })
+    expect(domToPng).toHaveBeenCalledWith(element.value, { scale: 4, filter: expect.any(Function) })
+    const options = vi.mocked(domToPng).mock.calls[0]![1]!
+    const control = { nodeType: 1, hasAttribute: (name: string) => name === 'data-editor-control' } as Element
+    const content = { nodeType: 1, hasAttribute: () => false } as Element
+    expect(options.filter!(control)).toBe(false)
+    expect(options.filter!(content)).toBe(true)
     expect(anchor.download).toBe('screenshot.png')
     expect(anchor.href).toBe('data:image/png;base64,image')
     expect(anchor.click).toHaveBeenCalledOnce()

@@ -27,6 +27,7 @@ export interface EditorProps {
 }
 export interface EditorEmits {
   imageDrop: [files: File[]]
+  imageClear: []
 }
 export interface EditorSlots {}
 </script>
@@ -116,12 +117,23 @@ const ui = computed(() => editor())
       </EditableArea>
     </EditableRoot>
     <div :class="ui.wrapper({ class: props.ui?.wrapper })">
-      <img
-        v-if="props.image"
-        :src="props.image"
-        alt="Uploaded image"
-        class="block w-full max-h-[60vh] object-contain"
-      >
+      <div v-if="props.image" class="group/image relative w-full">
+        <img
+          :src="props.image"
+          alt="Uploaded image"
+          class="block w-full max-h-[60vh] object-contain"
+        >
+        <UButton
+          icon="i-ph-x"
+          aria-label="Remove image and return to code"
+          color="neutral"
+          variant="solid"
+          size="xs"
+          class="absolute top-2 right-2 rounded-full opacity-0 transition-opacity group-hover/image:opacity-100 focus-visible:opacity-100"
+          data-editor-control
+          @click="emit('imageClear')"
+        />
+      </div>
       <template v-else>
         <Suspense>
           <Render :code="code" :language="language" :class="ui.render({ class: props.ui?.render })" />

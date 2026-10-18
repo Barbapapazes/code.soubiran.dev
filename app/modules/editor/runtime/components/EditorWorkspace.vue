@@ -1,7 +1,6 @@
 <script lang="ts">
 import type { CodeImageSize } from '#shared/code-image'
 import type { useEditor } from '../composables/useEditor'
-import { imageAccept } from '../composables/useEditorImage'
 import Editor from './Editor.vue'
 import EditorWrapper from './EditorWrapper.vue'
 import GradientSelector from './GradientSelector.vue'
@@ -39,15 +38,6 @@ defineSlots<EditorWorkspaceSlots>()
 const { track } = useAnalytics()
 const { size, language, languages, gradient, capture, image } = props.editor
 const { source: imageSource, loading: imageLoading, error: imageError } = image
-const imageInput = useTemplateRef('imageInput')
-function onImageSelected(event: Event) {
-  const input = event.target as HTMLInputElement
-  const files = Array.from(input.files ?? [])
-  if (files.length) {
-    void image.load(files)
-  }
-  input.value = ''
-}
 const wrapper = useTemplateRef('wrapper')
 defineExpose({ el: computed(() => wrapper.value?.el) })
 
@@ -87,7 +77,12 @@ const ui = computed(() => editorWorkspace())
   <main :class="ui.root({ class: [props.ui?.root, props.class] })">
     <div :class="ui.layout({ class: [props.ui?.layout, maxWidthClass] })">
       <EditorWrapper ref="wrapper" :gradient="gradient" :class="ui.canvas({ class: props.ui?.canvas })">
-        <Editor :image="imageSource" class="shadow-lg" @image-drop="image.load" />
+        <Editor
+          :image="imageSource"
+          class="shadow-lg"
+          @image-drop="image.load"
+          @image-clear="image.clear"
+        />
 
         <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
       </EditorWrapper>
@@ -99,35 +94,8 @@ const ui = computed(() => editorWorkspace())
           @update:model-value="track('editor_gradient_change', { gradient: $event })"
         />
 
-        <div class="flex flex-wrap items-center justify-center gap-2">
-          <input
-            ref="imageInput"
-            type="file"
-            :accept="imageAccept"
-            aria-label="Choose an image"
-            class="hidden"
-            tabindex="-1"
-            @change="onImageSelected"
-          >
-          <UButton
-            icon="i-ph-image"
-            :label="imageSource ? 'Replace image' : 'Upload image'"
-            color="neutral"
-            variant="subtle"
-            @click="imageInput?.click()"
-          />
-          <UButton
-            v-if="imageSource || imageLoading"
-            label="Back to code"
-            color="neutral"
-            variant="subtle"
-            @click="image.clear"
-          />
-          <p role="status" class="text-sm text-muted">
-            {{ imageLoading ? 'Loading image…' : 'Or drop an image onto the card. Images stay in this tab, not in shared links.' }}
-          </p>
-          <p v-if="imageError" role="alert" class="text-sm text-error">{{ imageError }}</p>
-        </div>
+        <p v-if="imageLoading" role="status" class="text-center text-sm text-muted">Loading image…</p>
+        <p v-if="imageError" role="alert" class="text-center text-sm text-error">{{ imageError }}</p>
 
         <div :class="ui.toolbar({ class: props.ui?.toolbar })">
           <UFieldGroup>
