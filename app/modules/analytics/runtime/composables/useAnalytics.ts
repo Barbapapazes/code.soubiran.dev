@@ -5,6 +5,8 @@ interface AnalyticsEventMap {
   editor_size_change: { size: CodeImageSize }
   editor_language_change: { language: CodeImageLanguage }
   editor_gradient_change: { gradient: CodeImageGradient }
+  editor_image_load: Record<string, never>
+  editor_image_clear: Record<string, never>
   editor_title_enable: Record<string, never>
   editor_title_submit: { enabled: boolean }
   capture_start: Record<string, never>

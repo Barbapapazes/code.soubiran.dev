@@ -70,6 +70,16 @@ describe('editor module capabilities', () => {
     expect(params.watermark).toBeUndefined()
   })
 
+  it('returns to code mode when an agent sets code', async () => {
+    const { useEditor } = await import('./useEditor')
+    const editor = scope.run(() => useEditor(() => undefined))!
+    editor.image.source.value = 'data:image/png;base64,example'
+    await editor.tools.find((tool) => tool.name === 'set_code')!.execute({ code: 'const next = true' })
+    expect(editor.image.source.value).toBeUndefined()
+    expect(editor.code.value).toBe('const next = true')
+    expect(track).toHaveBeenCalledWith('editor_image_clear', {})
+  })
+
   it('captures the current workspace element through the shared capture tool', async () => {
     const element = ref<HTMLElement>()
     const anchor = { click: vi.fn<() => void>(), download: '', href: '' }
