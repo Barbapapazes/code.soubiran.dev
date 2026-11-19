@@ -70,6 +70,16 @@ describe('editor module capabilities', () => {
     expect(params.watermark).toBeUndefined()
   })
 
+  it('returns to code mode when an agent sets code', async () => {
+    const { useEditor } = await import('./useEditor')
+    const editor = scope.run(() => useEditor(() => undefined))!
+    editor.image.source.value = 'data:image/png;base64,example'
+    await editor.tools.find((tool) => tool.name === 'set_code')!.execute({ code: 'const next = true' })
+    expect(editor.image.source.value).toBeUndefined()
+    expect(editor.code.value).toBe('const next = true')
+    expect(track).toHaveBeenCalledWith('editor_image_clear', {})
+  })
+
   it('captures the current workspace element through the shared capture tool', async () => {
     const element = ref<HTMLElement>()
     const anchor = { click: vi.fn<() => void>(), download: '', href: '' }
@@ -82,7 +92,12 @@ describe('editor module capabilities', () => {
     element.value = { id: 'workspace' } as HTMLElement
     await editor.tools.find((tool) => tool.name === 'capture_code')!.execute({})
 
-    expect(domToPng).toHaveBeenCalledWith(element.value, { scale: 4 })
+    expect(domToPng).toHaveBeenCalledWith(element.value, { scale: 4, filter: expect.any(Function) })
+    const options = vi.mocked(domToPng).mock.calls[0]![1]!
+    const control = { nodeType: 1, hasAttribute: (name: string) => name === 'data-editor-control' } as Element
+    const content = { nodeType: 1, hasAttribute: () => false } as Element
+    expect(options.filter!(control)).toBe(false)
+    expect(options.filter!(content)).toBe(true)
     expect(anchor.download).toBe('screenshot.png')
     expect(anchor.href).toBe('data:image/png;base64,image')
     expect(anchor.click).toHaveBeenCalledOnce()

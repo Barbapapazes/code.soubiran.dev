@@ -12,7 +12,7 @@ const inputSchema = z
   })
   .strict()
 
-export function createSetCodeTool(code: Ref<string>) {
+export function createSetCodeTool(code: Ref<string>, onSet?: () => void) {
   return {
     name: 'set_code',
     description:
@@ -20,6 +20,7 @@ export function createSetCodeTool(code: Ref<string>) {
     inputSchema: z.toJSONSchema(inputSchema),
     async execute(input: Record<string, unknown>) {
       code.value = inputSchema.parse(input).code
+      onSet?.()
       await nextTick()
 
       return { codeLength: code.value.length }

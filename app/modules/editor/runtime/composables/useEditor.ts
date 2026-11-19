@@ -4,6 +4,7 @@ import { createSetCodeTool } from '../tools/setCode'
 import { createSetCodeOptionsTool } from '../tools/setCodeOptions'
 import { useCode } from './useCode'
 import { useCodeTitle } from './useCodeTitle'
+import { useEditorImage } from './useEditorImage'
 import { useGradient } from './useGradient'
 import { useLanguage } from './useLanguage'
 import { useScreenshot } from './useScreenshot'
@@ -12,6 +13,7 @@ import { useWatermark } from './useWatermark'
 
 /** Editor state and capabilities shared by the workspace, assistant, and WebMCP. */
 export function useEditor(element: MaybeRefOrGetter<HTMLElement | null | undefined>) {
+  const image = useEditorImage()
   const { code } = useCode()
   const { title } = useCodeTitle()
   const { watermark } = useWatermark()
@@ -21,10 +23,10 @@ export function useEditor(element: MaybeRefOrGetter<HTMLElement | null | undefin
   const { capture } = useScreenshot(element)
 
   const tools = [
-    createSetCodeTool(code),
+    createSetCodeTool(code, image.clear),
     createSetCodeOptionsTool({ language, size, gradient, title, watermark }),
     createCaptureCodeTool(capture),
   ] satisfies WebMCP.ModelContextTool[]
 
-  return { code, title, watermark, size, language, languages, gradient, capture, tools }
+  return { image, code, title, watermark, size, language, languages, gradient, capture, tools }
 }

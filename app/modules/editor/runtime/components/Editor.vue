@@ -21,19 +21,43 @@ const editor = tv({
 })
 
 export interface EditorProps {
+  image?: string
   class?: any
   ui?: Partial<typeof editor.slots>
 }
-export interface EditorEmits {}
+export interface EditorEmits {
+  imageDrop: [files: File[]]
+  imageClear: []
+}
 export interface EditorSlots {}
 </script>
 
 <script lang="ts" setup>
 const props = defineProps<EditorProps>()
-defineEmits<EditorEmits>()
+const emit = defineEmits<EditorEmits>()
 defineSlots<EditorSlots>()
 
 const { track } = useAnalytics()
+const dragDepth = ref(0)
+function onDragEnter(event: DragEvent) {
+  if (event.dataTransfer?.types.includes('Files')) {
+    event.preventDefault()
+    dragDepth.value++
+  }
+}
+function onDragOver(event: DragEvent) {
+  if (event.dataTransfer?.types.includes('Files')) {
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'copy'
+  }
+}
+function onDrop(event: DragEvent) {
+  dragDepth.value = 0
+  if (event.dataTransfer?.types.includes('Files')) {
+    event.preventDefault()
+    emit('imageDrop', Array.from(event.dataTransfer.files))
+  }
+}
 const editable = useTemplateRef('editable')
 const textarea = useTemplateRef('textarea')
 
@@ -66,7 +90,14 @@ const ui = computed(() => editor())
 </script>
 
 <template>
-  <div :class="ui.base({ class: [props.ui?.base, props.class] })">
+  <div
+    :class="ui.base({ class: [props.ui?.base, props.class] })"
+    @dragenter="onDragEnter"
+    @dragover="onDragOver"
+    @dragleave="dragDepth = Math.max(0, dragDepth - 1)"
+    @drop="onDrop"
+    @dragend="dragDepth = 0"
+  >
     <div v-if="!showTitle" :class="ui.actions({ class: props.ui?.actions })">
       <UButton color="neutral" variant="link" size="xs" label="Title" @click="enableTitle" />
     </div>
@@ -86,20 +117,46 @@ const ui = computed(() => editor())
       </EditableArea>
     </EditableRoot>
     <div :class="ui.wrapper({ class: props.ui?.wrapper })">
-      <Suspense>
-        <Render :code="code" :language="language" :class="ui.render({ class: props.ui?.render })" />
-      </Suspense>
+      <div v-if="props.image" class="group/image relative w-full">
+        <img
+          :src="props.image"
+          alt="Uploaded image"
+          class="block w-full max-h-[60vh] object-contain"
+        >
+        <UButton
+          icon="i-ph-x"
+          aria-label="Remove image and return to code"
+          color="neutral"
+          variant="solid"
+          size="xs"
+          class="absolute top-2 right-2 rounded-full opacity-0 transition-opacity group-hover/image:opacity-100 focus-visible:opacity-100"
+          data-editor-control
+          @click="emit('imageClear')"
+        />
+      </div>
+      <template v-else>
+        <Suspense>
+          <Render :code="code" :language="language" :class="ui.render({ class: props.ui?.render })" />
+        </Suspense>
 
-      <Textarea
-        ref="textarea"
-        v-model="code"
-        autocomplete="off"
-        autocapitalize="off"
-        autocorrect="off"
-        autofocus
-        spellcheck="false"
-        :class="ui.textarea({ class: props.ui?.textarea })"
-      />
+        <Textarea
+          ref="textarea"
+          v-model="code"
+          autocomplete="off"
+          autocapitalize="off"
+          autocorrect="off"
+          autofocus
+          spellcheck="false"
+          :class="ui.textarea({ class: props.ui?.textarea })"
+        />
+      </template>
+    </div>
+    <div
+      v-if="dragDepth > 0"
+      role="status"
+      class="pointer-events-none absolute inset-0 z-20 flex items-center justify-center border-2 border-dashed border-primary bg-elevated/90 text-highlighted"
+    >
+      Drop one image here
     </div>
   </div>
 </template>

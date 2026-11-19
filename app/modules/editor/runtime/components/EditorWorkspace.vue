@@ -36,7 +36,8 @@ defineEmits<EditorWorkspaceEmits>()
 defineSlots<EditorWorkspaceSlots>()
 
 const { track } = useAnalytics()
-const { size, language, languages, gradient, capture } = props.editor
+const { size, language, languages, gradient, capture, image } = props.editor
+const { source: imageSource, loading: imageLoading, error: imageError } = image
 const wrapper = useTemplateRef('wrapper')
 defineExpose({ el: computed(() => wrapper.value?.el) })
 
@@ -76,7 +77,12 @@ const ui = computed(() => editorWorkspace())
   <main :class="ui.root({ class: [props.ui?.root, props.class] })">
     <div :class="ui.layout({ class: [props.ui?.layout, maxWidthClass] })">
       <EditorWrapper ref="wrapper" :gradient="gradient" :class="ui.canvas({ class: props.ui?.canvas })">
-        <Editor class="shadow-lg" />
+        <Editor
+          :image="imageSource"
+          class="shadow-lg"
+          @image-drop="image.load"
+          @image-clear="image.clear"
+        />
 
         <Watermark class="absolute inset-x-0 bottom-6 text-center translate-y-1/2" />
       </EditorWrapper>
@@ -87,6 +93,9 @@ const ui = computed(() => editorWorkspace())
           :class="ui.gradientSelector({ class: props.ui?.gradientSelector })"
           @update:model-value="track('editor_gradient_change', { gradient: $event })"
         />
+
+        <p v-if="imageLoading" role="status" class="text-center text-sm text-muted">Loading image…</p>
+        <p v-if="imageError" role="alert" class="text-center text-sm text-error">{{ imageError }}</p>
 
         <div :class="ui.toolbar({ class: props.ui?.toolbar })">
           <UFieldGroup>
@@ -110,6 +119,7 @@ const ui = computed(() => editorWorkspace())
 
             <USelect
               v-model="language"
+              :disabled="Boolean(imageSource)"
               :items="languages"
               aria-label="Code language"
               color="neutral"
@@ -122,7 +132,14 @@ const ui = computed(() => editorWorkspace())
           <UFieldGroup>
             <slot name="actions" />
 
-            <UButton icon="i-ph-camera" label="Capture" color="neutral" variant="solid" @click="capture" />
+            <UButton
+              icon="i-ph-camera"
+              label="Capture"
+              color="neutral"
+              variant="solid"
+              :disabled="imageLoading"
+              @click="capture"
+            />
           </UFieldGroup>
         </div>
       </div>
